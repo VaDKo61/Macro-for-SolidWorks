@@ -1,1 +1,4 @@
 ﻿pywin32==306
+tk==0.1
+auto-py-to-exe==2.44
+openpyxl==3.1.3

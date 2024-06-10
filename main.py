@@ -1,21 +1,19 @@
-import sys
-import asyncio
-import win32com.client
+from tkinter import Tk, Button, Label
 
+from conversion_excel import conversion_excel
 
-async def main():
-    sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
-    sw_model = sw_app.ActiveDoc
-    file_name: str = sw_model.GetPathName.split('.')[0]
-    configs: tuple = sw_model.GetConfigurationNames
-    for i in configs:
-        sw_model.ShowConfiguration2(i)
-        new_name: str = file_name + " - " + i + ".IGS"
-        sw_model.SaveAs3(new_name, 0, 2)
+root = Tk()
+root.title('Помощник инженера')
+root.geometry('600x600')
 
+label = Label(text='Функции для инженера-конструктора', font=('Times New Roman', 15))
+label.pack()
 
-try:
-    if __name__ == "__main__":
-        asyncio.run(main())
-except KeyboardInterrupt:
-    sys.exit()
+btn_conversion_excel = Button(root,
+                              text='Преобразовать Excel',
+                              command=conversion_excel,
+                              font=('Times New Roman', 15),
+                              activebackground='red')
+btn_conversion_excel.place(x=10, y=40)
+
+root.mainloop()
