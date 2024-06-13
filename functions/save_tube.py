@@ -1,28 +1,30 @@
 import os
-import sys
-import asyncio
+
+import pythoncom
 import win32com.client
 
 
-def create_dir(path: str):
+def create_path_tube(path: str):
     """Check and crete path"""
     try:
         os.makedirs(path)
+        print(f'Директория {path} была создана')
     except FileExistsError:
         print(f'Директория {path} уже существует')
 
 
-async def save_tube():
+def save_tube():
     sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
+    arg1 = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 2)
+    arg2 = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 128)
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         print('Активна не сборка')
         return
 
     # Save tube in a separate file
-    components = sw_model.GetComponents(True)
     tubes: list = []
-    for component in components:
+    for component in sw_model.GetComponents(True):
         component_name: str = component.name2.split('-')[0]
         if component_name.startswith('Труба'):
             if component_name not in tubes:
@@ -33,22 +35,8 @@ async def save_tube():
                 path_list.append('Трубы')
                 path_list.append(assembly_name)
                 path: str = '\\'.join(path_list)
-                create_dir(path)
+                create_path_tube(path)
                 part.SaveAs3(path + '\\' + component_name + '.SLDPRT', 0, 8)
     else:
         print('Трубы успешно сохранены')
-
-
-try:
-    if __name__ == "__main__":
-        asyncio.run(save_tube())
-except KeyboardInterrupt:
-    sys.exit()
-
-    # # Get components assembly
-    # components = sw_model.GetComponents(True)
-    # for component in components:
-    #     print(component.ReferencedConfiguration)
-    #     part = component.GetModelDoc2
-    #     b = part
-    #     print(b)
+    sw_model.Save3(1, arg1, arg2)
