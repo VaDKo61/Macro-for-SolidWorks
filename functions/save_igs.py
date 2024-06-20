@@ -14,7 +14,7 @@ def get_path_igs(assembly_path: str) -> tuple:
     path: str = '\\'.join(path_list)
     if os.path.isdir(path):
         for file in os.listdir(path):
-            os.remove(path + '\\' + file)
+            os.remove(f'{path}\\{file}')
         else:
             print('Директория была очищена от IGS файлов')
     else:
@@ -43,12 +43,12 @@ def create_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str,
     path_tube: str = '\\'.join(path_tube_list[:-1])
     path_assembly = '\\'.join(path_tube_list[:-3])
     for tube, configurations in tubes.items():
-        model = sw_app.OpenDoc6(path_tube + '\\' + tube + '.SLDPRT', 1, 2, '', arg5, arg6)
+        model = sw_app.OpenDoc6(f'{path_tube}\\{tube}.SLDPRT', 1, 2, '', arg5, arg6)
         for configuration, count in configurations.items():
             model.ShowConfiguration2(configuration)
-            model.SaveAs3(path + '\\' + tube + f' l={configuration}' + f' ({count} шт)' + '.igs', 0, 2)
+            model.SaveAs3(f'{path}\\{tube} l={configuration} ({count} шт.igs)', 0, 2)
         sw_app.CloseDoc(tube)
-    sw_app.OpenDoc6(path_assembly + '\\' + assembly_name + '.SLDASM', 2, 32, '', arg5, arg6)
+    sw_app.OpenDoc6(f'{path_assembly}\\{assembly_name}.SLDASM', 2, 32, '', arg5, arg6)
 
 
 def save_igs():
@@ -57,6 +57,7 @@ def save_igs():
     arg2 = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 128)
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
+        sw_app.SendmsgToUser('Активна не сборка')
         print('Активна не сборка')
         return
     assembly_name, path = get_path_igs(sw_model.GetPathName)
@@ -66,5 +67,6 @@ def save_igs():
 
     create_igs(sw_app, assembly_name, path, tubes, arg1, arg2)
 
+    sw_app.SendmsgToUser('IGS успешно сохранены')
     print('IGS успешно сохранены')
 
