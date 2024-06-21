@@ -27,7 +27,7 @@ def save_tube():
     tubes: list = []
     for component in sw_model.GetComponents(True):
         component_name: str = component.name2.split('-')[0]
-        if component_name.startswith('Труба'):
+        if component_name.startswith('Труба') or component_name.startswith('Ниппель'):
             if component_name not in tubes:
                 tubes.append(component_name)
                 part = component.GetModelDoc2

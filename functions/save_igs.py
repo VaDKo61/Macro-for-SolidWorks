@@ -26,7 +26,7 @@ def get_path_igs(assembly_path: str) -> tuple:
 def get_count_tube(components: list) -> dict[str, dict[str, int]]:
     tubes: dict[str, dict[str, int]] = {}
     for component in components:
-        if component.Name2.startswith('Труба'):
+        if component.Name2.startswith('Труба') or component.Name2.startswith('Ниппель'):
             name: str = component.Name2.split('-')[0]
             conf: str = component.ReferencedConfiguration
             if not tubes.get(name):
@@ -46,7 +46,8 @@ def create_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str,
         model = sw_app.OpenDoc6(f'{path_tube}\\{tube}.SLDPRT', 1, 2, '', arg5, arg6)
         for configuration, count in configurations.items():
             model.ShowConfiguration2(configuration)
-            model.SaveAs3(f'{path}\\{tube} l={configuration} ({count} шт.igs)', 0, 2)
+            tube_new = tube.replace('(Резьба зеркало)', '(З)').replace('(Плоскости от трубы)', '(Т)')
+            model.SaveAs3(f'{path}\\{tube_new} l={configuration} ({count} шт).igs', 0, 2)
         sw_app.CloseDoc(tube)
     sw_app.OpenDoc6(f'{path_assembly}\\{assembly_name}.SLDASM', 2, 32, '', arg5, arg6)
 
@@ -69,4 +70,3 @@ def save_igs():
 
     sw_app.SendmsgToUser('IGS успешно сохранены')
     print('IGS успешно сохранены')
-
