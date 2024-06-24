@@ -46,6 +46,12 @@ def create_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str,
         model = sw_app.OpenDoc6(f'{path_tube}\\{tube}.SLDPRT', 1, 2, '', arg5, arg6)
         for configuration, count in configurations.items():
             model.ShowConfiguration2(configuration)
+            thread_1 = model.FeatureByName('Бобышка-Вытянуть2')
+            if thread_1:
+                thread_1.SetSuppression2(0, 1)
+            thread_1 = model.FeatureByName('Бобышка-Вытянуть3')
+            if thread_1:
+                thread_1.SetSuppression2(0, 1)
             tube_new = tube.replace('(Резьба зеркало)', '(З)').replace('(Плоскости от трубы)', '(Т)')
             model.SaveAs3(f'{path}\\{tube_new} l={configuration} ({count} шт).igs', 0, 2)
         sw_app.CloseDoc(tube)
