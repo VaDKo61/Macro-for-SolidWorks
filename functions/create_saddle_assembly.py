@@ -34,7 +34,7 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
     assembly_name: str = sw_model.GetPathName.split('\\')[-1].split('.')[0]
     sw_model.Extension.SelectByID2(f'Спереди@{part_name}@{assembly_name}', 'PLANE', 0, 0, 0,
                                    False, 0, vt_dispatch, 0)
-    sw_model.SketchManager.InsertSketch(True)
+    sw_model.SketchManager.InsertSketch(False)
     sw_model.ClearSelection2(True)
 
     # sketch use edge
@@ -70,11 +70,18 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
     sw_model.ClearSelection2(True)
 
     # create cut extrude
-    sw_model.FeatureManager.FeatureCut4(True, False, False, 6, 0, 0.5, 0.001, False, False, False, False, 0, 0,
-                                        False,
-                                        False, False, False, False, True, True, True, True, False, 0, 0, False,
-                                        False)
+    feature_cut = sw_model.FeatureManager.FeatureCut4(True, False, False, 6, 0, 0.5, 0.001, False, False, False, False,
+                                                      0, 0, False, False, False, False, False, True, True, True, True,
+                                                      False, 0, 0, False, False)
     sw_model.ClearSelection2(True)
+
+    # suppression other configurations
+    sketch_feature_cut = feature_cut.GetParents[0]
+    a = sketch_feature_cut.SetSuppression2(0, 2)
+    sw_model.Extension.SelectByID2(f'{feature_cut.Name}@{part_name}@{assembly_name}', 'BODYFEATURE', 0, 0, 0, False, 0,
+                                   vt_dispatch, 0)
+    a = sw_model.EditUnsuppress2
+
     sw_model.EditAssembly()
     a = sw_model.EditRebuild3
     sw_app.SendmsgToUser('Седло успешно создано')
@@ -93,4 +100,11 @@ def assembly_saddle():
         sw_app.SendmsgToUser('Не выбрана кромка под седло')
         print('Не выбрана кромка под седло')
         return
+    if sw_model.SelectionManager.GetSelectedObjectCount2(-1) > 1:
+        sw_app.SendmsgToUser('Выбрано два объекта')
+        print('Выбрано два объекта')
+        return
     create_saddle_assembly(sw_app, sw_model, vt_dispatch)
+
+
+assembly_saddle()

@@ -10,6 +10,10 @@ def create_saddle_part(sw_app, sw_model, vt_dispatch):
         sw_app.SendmsgToUser('Не выбрана кромка под седло')
         print('Не выбрана кромка под седло')
         return
+    if selection_manager.GetSelectedObjectCount2(-1) > 1:
+        sw_app.SendmsgToUser('Выбрано два объекта')
+        print('Выбрано два объекта')
+        return
     edges = selection_manager.GetSelectedObject6(1, -1)
     sw_model.ClearSelection2(True)
 
