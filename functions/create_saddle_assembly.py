@@ -105,6 +105,3 @@ def assembly_saddle():
         print('Выбрано два объекта')
         return
     create_saddle_assembly(sw_app, sw_model, vt_dispatch)
-
-
-assembly_saddle()

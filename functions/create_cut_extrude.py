@@ -1,7 +1,7 @@
 import win32com.client
 
 
-def create_cut_extrude(sw_app, sw_model):
+def create_cut_extrude(sw_app, sw_model, kip):
     """Create sketch and cut extrude"""
     selection_manager = sw_model.SelectionManager
     edges = selection_manager.GetSelectedObject6(1, -1)
@@ -38,6 +38,11 @@ def create_cut_extrude(sw_app, sw_model):
     sw_model.SketchManager.InsertSketch(True)
     edges.Select4(True, selection_data)
     sw_model.SketchManager.SketchUseEdge3(False, False)
+    if kip:
+        edges_use = sw_model.GetActiveSketch2.GetSketchSegments[-1]
+        edges_use.ConstructionGeometry = True
+        edges_use.Select4(True, selection_data)
+        sw_model.SketchManager.SketchOffset2(0.001, False, True, 0, 0, True)
 
     # create cut extrude
     sw_model.FeatureManager.FeatureCut4(False, False, False, 0, 0, 0.010, 0.010, False, False, False,
@@ -57,6 +62,24 @@ def cut_extrude():
         sw_app.SendmsgToUser('Активна не сборка')
         print('Активна не сборка')
         return
+    if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
+        sw_app.SendmsgToUser('Не выбрана кромка врезаемой трубы')
+        print('Не выбрана кромка врезаемой трубы')
+        return
+    if sw_model.SelectionManager.GetSelectedObjectType3(2, -1) != 2:
+        sw_app.SendmsgToUser('Не выбрана поверхность трубы для отверстия')
+        print('Не выбрана поверхность трубы для отверстия')
+        return
+    create_cut_extrude(sw_app, sw_model, kip=False)
+
+
+def cut_extrude_kip():
+    sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
+    sw_model = sw_app.ActiveDoc
+    if sw_model.GetType != 2:
+        sw_app.SendmsgToUser('Активна не сборка')
+        print('Активна не сборка')
+        return
     print(sw_model.SelectionManager.GetSelectedObjectType3(1, -1))
     if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
         sw_app.SendmsgToUser('Не выбрана кромка врезаемой трубы')
@@ -66,7 +89,4 @@ def cut_extrude():
         sw_app.SendmsgToUser('Не выбрана поверхность трубы для отверстия')
         print('Не выбрана поверхность трубы для отверстия')
         return
-    create_cut_extrude(sw_app, sw_model)
-
-
-cut_extrude()
+    create_cut_extrude(sw_app, sw_model, kip=True)

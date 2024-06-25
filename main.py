@@ -1,6 +1,7 @@
 from tkinter import Tk, Button, Label
 
 from functions.conversion_excel import conversion_excel
+from functions.create_cut_extrude import cut_extrude, cut_extrude_kip
 from functions.create_saddle_assembly import assembly_saddle
 from functions.create_saddle_part import part_saddle
 from functions.save_igs import save_igs
@@ -16,6 +17,8 @@ label_2 = Label(text='Для лазерного станка:', font=('Times New
 label_2.place(x=10, y=80)
 label_3 = Label(text='Создание "седел":', font=('Times New Roman', 15))
 label_3.place(x=10, y=150)
+label_4 = Label(text='Создание отверстий:', font=('Times New Roman', 15))
+label_4.place(x=10, y=220)
 
 btn_conversion_excel = Button(root,
                               text='Преобразовать Excel',
@@ -52,5 +55,18 @@ btn_create_saddle = Button(root,
                            activebackground='red',
                            cursor="hand2")
 btn_create_saddle.place(x=200, y=180)
-
+btn_cut_extrude = Button(root,
+                         text='Создать отверстие от трубы',
+                         command=cut_extrude,
+                         font=('Times New Roman', 13),
+                         activebackground='red',
+                         cursor="hand2")
+btn_cut_extrude.place(x=10, y=250)
+btn_cut_extrude_kip = Button(root,
+                             text='Создать отверстие от врезки (КИП)',
+                             command=cut_extrude_kip,
+                             font=('Times New Roman', 13),
+                             activebackground='red',
+                             cursor="hand2")
+btn_cut_extrude_kip.place(x=230, y=250)
 root.mainloop()
