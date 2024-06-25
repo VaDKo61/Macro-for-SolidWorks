@@ -34,7 +34,7 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
     assembly_name: str = sw_model.GetPathName.split('\\')[-1].split('.')[0]
     sw_model.Extension.SelectByID2(f'Спереди@{part_name}@{assembly_name}', 'PLANE', 0, 0, 0,
                                    False, 0, vt_dispatch, 0)
-    sw_model.SketchManager.InsertSketch(False)
+    sw_model.SketchManager.InsertSketch(True)
     sw_model.ClearSelection2(True)
 
     # sketch use edge

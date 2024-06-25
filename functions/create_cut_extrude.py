@@ -1,4 +1,3 @@
-import pythoncom
 import win32com.client
 
 
@@ -30,15 +29,29 @@ def create_cut_extrude(sw_app, sw_model):
     cut_in_pipe.Select4(True, selection_data, False)
     sw_model.EditPart()
 
-    # create sketch
-    sw_model.SketchManager.Insert3DSketch(True)
+    # create plane
     edges.Select4(True, selection_data)
-    sw_model.SketchManager.ConstructionGeometry = True
+    plane = sw_model.FeatureManager.InsertRefPlane(4, 0, 0, 0, 0, 0)
+
+    # create sketch
+    plane.Select4(True, selection_data)
+    sw_model.SketchManager.InsertSketch(True)
+    edges.Select4(True, selection_data)
+    sw_model.SketchManager.SketchUseEdge3(False, False)
+
+    # create cut extrude
+    sw_model.FeatureManager.FeatureCut4(False, False, False, 0, 0, 0.010, 0.010, False, False, False,
+                                        False, 0, 0, False, False, False, False, False, True, True, True,
+                                        True, False, 0, 0, False, False)
+    sw_model.ClearSelection2(True)
+    sw_model.EditAssembly()
+    a = sw_model.EditRebuild3
+    sw_app.SendmsgToUser('Отверстие успешно создано')
+    print('Отверстие успешно создано')
 
 
 def cut_extrude():
     sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
-    vt_dispatch = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
