@@ -1,10 +1,10 @@
 import os
 
-import pythoncom
+import openpyxl
 import win32com.client
 
 
-def create_specification(sw_app, sw_model, vt_dispatch):
+def create_specification(sw_app, sw_model):
     assembly_path: str = sw_model.GetPathName
     assembly_path_list: list = assembly_path.split('\\')[2:]
     assembly_name: str = assembly_path_list[-1].split('.')[0]
@@ -17,7 +17,8 @@ def create_specification(sw_app, sw_model, vt_dispatch):
             frames.append(component.GetPathName)
 
     # create draw
-    template_path = f'\\\\{assembly_path_list[0]}\\{assembly_path_list[1]}\\{engineer}\\Шаблоны\\Чертеж сборки.DRWDOT'
+    template_path = f'\\\\{assembly_path_list[0]}\\{assembly_path_list[1]}\\{engineer}\\Шаблоны\\' \
+                    f'Чертеж спецификации.DRWDOT'
     sw_draw = sw_app.NewDocument(template_path, 12, 0.42, 0.297)
 
     # add draw view
@@ -56,18 +57,29 @@ def create_specification(sw_app, sw_model, vt_dispatch):
     for i, table in enumerate(tables_frame, start=1):
         text = table.WeldmentCutListFeature.GetTableAnnotations[0]
         text.SaveAsText2(f'{path_specification}//{assembly_name} (Рама ч{i}).txt', '__', False)
-    
+    count = 0
+    for file in os.listdir(f'{path_specification}'):
+        if file.split('.')[-1] == 'txt':
+            count += 1
+            with open(f'{path_specification}\\{file}', 'r') as file_text:
+                content: str = file_text.read()
+                content_list: list = [i.split('__') for i in content.split('\n') if i]
+                excel_list: list[tuple] = list(map(tuple, content_list))
+            wb = openpyxl.Workbook()
+            ws = wb.active
+            for row in excel_list:
+                ws.append(row)
+            wb.save(f'{path_specification}//{assembly_name} (Рама ч{count}).xlsx')
+            os.remove(f'{path_specification}\\{file}')
 
 
 def specification():
     sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
-    vt_dispatch = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
         print('Активна не сборка')
         return
-    create_specification(sw_app, sw_model, vt_dispatch)
-
-
-specification()
+    create_specification(sw_app, sw_model)
+    sw_app.SendmsgToUser('Чертеж создан и сохранены Excel')
+    print('Чертеж создан и сохранены Excel')

@@ -4,6 +4,7 @@ from functions.conversion_excel import conversion_excel
 from functions.create_cut_extrude import cut_extrude, cut_extrude_kip
 from functions.create_saddle_assembly import assembly_saddle
 from functions.create_saddle_part import part_saddle
+from functions.create_specification import specification
 from functions.save_igs import save_igs
 from functions.save_tube import save_tube
 
@@ -19,6 +20,8 @@ label_3 = Label(text='Создание "седел":', font=('Times New Roman', 
 label_3.place(x=10, y=150)
 label_4 = Label(text='Создание отверстий:', font=('Times New Roman', 15))
 label_4.place(x=10, y=220)
+label_5 = Label(text='Чертежи:', font=('Times New Roman', 15))
+label_5.place(x=10, y=290)
 
 btn_conversion_excel = Button(root,
                               text='Преобразовать Excel',
@@ -69,4 +72,12 @@ btn_cut_extrude_kip = Button(root,
                              activebackground='red',
                              cursor="hand2")
 btn_cut_extrude_kip.place(x=230, y=250)
+btn_specification = Button(root,
+                           text='Создать спецификацию',
+                           command=specification,
+                           font=('Times New Roman', 13),
+                           activebackground='red',
+                           cursor="hand2")
+btn_specification.place(x=10, y=320)
+
 root.mainloop()
