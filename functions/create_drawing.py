@@ -37,5 +37,3 @@ def drawing():
         return
     create_drawing(sw_app, sw_model, vt_dispatch)
 
-
-drawing()

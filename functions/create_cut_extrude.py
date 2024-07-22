@@ -6,6 +6,7 @@ def create_cut_extrude(sw_app, sw_model, kip):
     selection_manager = sw_model.SelectionManager
     edges = selection_manager.GetSelectedObject6(1, -1)
     selection_manager.DeSelect2(1, -1)
+    surface = selection_manager.GetSelectedObject6(1, -1)
     cut_in_pipe = selection_manager.GetSelectedObjectsComponent4(1, -1)
     sw_model.EditPart()
     sw_model_part = sw_model.GetEditTarget
@@ -45,8 +46,9 @@ def create_cut_extrude(sw_app, sw_model, kip):
         sw_model.SketchManager.SketchOffset2(0.001, False, True, 0, 0, True)
 
     # create cut extrude
-    sw_model.FeatureManager.FeatureCut4(False, False, False, 0, 0, 0.010, 0.010, False, False, False,
-                                        False, 0, 0, False, False, False, False, False, True, True, True,
+    surface.Select4(True, selection_data)
+    sw_model.FeatureManager.FeatureCut4(True, False, False, 5, 0, 0.005, 0.001, False, False, False,
+                                        False, 0, 0, True, False, False, False, False, True, True, True,
                                         True, False, 0, 0, False, False)
     sw_model.ClearSelection2(True)
     sw_model.EditAssembly()
