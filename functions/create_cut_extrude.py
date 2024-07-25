@@ -47,9 +47,13 @@ def create_cut_extrude(sw_app, sw_model, kip):
 
     # create cut extrude
     surface.Select4(True, selection_data)
-    sw_model.FeatureManager.FeatureCut4(True, False, False, 5, 0, 0.005, 0.001, False, False, False,
-                                        False, 0, 0, True, False, False, False, False, True, True, True,
-                                        True, False, 0, 0, False, False)
+    feature_cut = sw_model.FeatureManager.FeatureCut4(True, False, False, 5, 0, 0.005, 0.001, False, False, False,
+                                                      False, 0, 0, True, False, False, False, False, True, True, True,
+                                                      True, False, 0, 0, False, False)
+    if not feature_cut:
+        sw_model.FeatureManager.FeatureCut4(True, False, False, 5, 0, 0.005, 0.001, False, False, False,
+                                            False, 0, 0, False, False, False, False, False, True, True, True,
+                                            True, False, 0, 0, False, False)
     sw_model.ClearSelection2(True)
     sw_model.EditAssembly()
     a = sw_model.EditRebuild3
