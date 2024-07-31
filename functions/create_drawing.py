@@ -36,4 +36,3 @@ def drawing():
         print('Активна не сборка')
         return
     create_drawing(sw_app, sw_model, vt_dispatch)
-

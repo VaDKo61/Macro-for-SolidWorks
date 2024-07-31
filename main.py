@@ -1,7 +1,9 @@
 from tkinter import Tk, Button, Label
 
+from functions.add_length_tube import length_tube
 from functions.conversion_excel import conversion_excel
 from functions.create_cut_extrude import cut_extrude, cut_extrude_kip
+from functions.create_drawing import drawing
 from functions.create_saddle_assembly import assembly_saddle
 from functions.create_saddle_part import part_saddle
 from functions.create_specification import specification
@@ -79,5 +81,19 @@ btn_specification = Button(root,
                            activebackground='red',
                            cursor="hand2")
 btn_specification.place(x=10, y=320)
+btn_drawing = Button(root,
+                     text='Создать чертеж (1-5 лист)',
+                     command=drawing,
+                     font=('Times New Roman', 13),
+                     activebackground='red',
+                     cursor="hand2")
+btn_drawing.place(x=195, y=320)
+btn_length_tube = Button(root,
+                         text='Добавить размеры труб на вид',
+                         command=length_tube,
+                         font=('Times New Roman', 13),
+                         activebackground='red',
+                         cursor="hand2")
+btn_length_tube.place(x=10, y=360)
 
 root.mainloop()
