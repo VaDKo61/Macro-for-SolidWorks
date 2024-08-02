@@ -5,6 +5,7 @@ import win32com.client
 def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
     """Create sketch and FeatureCut"""
     selection_manager_assembly = sw_model.SelectionManager
+    selection_data_assembly = selection_manager_assembly.CreateSelectData
     edges_assembly = selection_manager_assembly.GetSelectedObject6(1, -1)
     configuration_assembly = selection_manager_assembly.GetSelectedObjectsComponent4(1, -1)
     sw_model.EditPart()
@@ -12,27 +13,27 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
 
     # create configuration
     name_active_configuration: str = sw_model_part.ConfigurationManager.ActiveConfiguration.Name
-    name_configurations: str = sw_model_part.GetConfigurationNames
-    for i in range(2, 51):
-        name_new_configurations: str = f'{name_active_configuration}({i})'
-        if name_new_configurations not in name_configurations:
-            sw_model_part.ConfigurationManager.AddConfiguration2(name_new_configurations, '', '', 128,
-                                                                 name_active_configuration, '', True)
-            break
-    else:
-        sw_app.SendmsgToUser('Не удалось добавить конфигурацию')
-        print('Не удалось добавить конфигурацию')
-        return
-    sw_model.EditAssembly()
-    configuration_assembly.ReferencedConfiguration = name_new_configurations
-    selection_data_assembly = selection_manager_assembly.CreateSelectData
-    configuration_assembly.Select4(True, selection_data_assembly, False)
-    sw_model.EditPart()
+    if not name_active_configuration.endswith(')'):
+        name_configurations: str = sw_model_part.GetConfigurationNames
+        for i in range(2, 51):
+            name_new_configurations: str = f'{name_active_configuration}({i})'
+            if name_new_configurations not in name_configurations:
+                sw_model_part.ConfigurationManager.AddConfiguration2(name_new_configurations, '', '', 128,
+                                                                     name_active_configuration, '', True)
+                break
+        else:
+            sw_app.SendmsgToUser('Не удалось добавить конфигурацию')
+            print('Не удалось добавить конфигурацию')
+            return
+        sw_model.EditAssembly()
+        configuration_assembly.ReferencedConfiguration = name_new_configurations
+        configuration_assembly.Select4(True, selection_data_assembly, False)
+        sw_model.EditPart()
 
     # create sketch
     part_name: str = configuration_assembly.Name2
     assembly_name: str = sw_model.GetPathName.split('\\')[-1].split('.')[0]
-    sw_model.Extension.SelectByID2(f'Спереди@{part_name}@{assembly_name}', 'PLANE', 0, 0, 0,
+    sw_model.Extension.SelectByID2(f'Сверху@{part_name}@{assembly_name}', 'PLANE', 0, 0, 0,
                                    False, 0, vt_dispatch, 0)
     sw_model.SketchManager.InsertSketch(True)
     sw_model.ClearSelection2(True)
@@ -81,7 +82,6 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
     sw_model.Extension.SelectByID2(f'{feature_cut.Name}@{part_name}@{assembly_name}', 'BODYFEATURE', 0, 0, 0, False, 0,
                                    vt_dispatch, 0)
     a = sw_model.EditUnsuppress2
-
     sw_model.EditAssembly()
     a = sw_model.EditRebuild3
     sw_app.SendmsgToUser('Седло успешно создано')

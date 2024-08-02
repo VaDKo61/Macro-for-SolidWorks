@@ -2,6 +2,7 @@ from tkinter import Tk, Button, Label
 
 from functions.add_length_tube import length_tube
 from functions.conversion_excel import conversion_excel
+from functions.create_any_cut_extrude import any_cut_extrude, any_cut_extrude_kip
 from functions.create_cut_extrude import cut_extrude, cut_extrude_kip
 from functions.create_drawing import drawing
 from functions.create_saddle_assembly import assembly_saddle
@@ -13,7 +14,7 @@ from functions.save_tube import save_tube
 
 root = Tk()
 root.title('Помощник инженера')
-root.geometry('600x600')
+root.geometry('700x600')
 
 label_1 = Label(text='Чертежи:', font=('Times New Roman', 15))
 label_1.place(x=10, y=10)
@@ -85,19 +86,33 @@ btn_cut_extrude_kip = Button(root,
                              activebackground='red',
                              cursor="hand2")
 btn_cut_extrude_kip.place(x=228, y=260)
+btn_any_cut_extrude = Button(root,
+                             text='Создать отверстие от нескольких труб',
+                             command=any_cut_extrude,
+                             font=('Times New Roman', 13),
+                             activebackground='red',
+                             cursor="hand2")
+btn_any_cut_extrude.place(x=10, y=300)
+btn_any_cut_extrude_kip = Button(root,
+                                 text='Создать отверстие от нескольких врезок (КИП)',
+                                 command=any_cut_extrude_kip,
+                                 font=('Times New Roman', 13),
+                                 activebackground='red',
+                                 cursor="hand2")
+btn_any_cut_extrude_kip.place(x=301, y=300)
 btn_save_igs = Button(root,
                       text='Сохранить все активные трубы в IGS',
                       command=save_igs,
                       font=('Times New Roman', 13),
                       activebackground='red',
                       cursor="hand2")
-btn_save_igs.place(x=10, y=300)
+btn_save_igs.place(x=10, y=340)
 btn_save_elements_frame_igs = Button(root,
                                      text='Сохранить элементы рамы в IGS',
                                      command=elements_frame_igs,
                                      font=('Times New Roman', 13),
                                      activebackground='red',
                                      cursor="hand2")
-btn_save_elements_frame_igs.place(x=10, y=340)
+btn_save_elements_frame_igs.place(x=10, y=380)
 
 root.mainloop()

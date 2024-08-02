@@ -19,21 +19,22 @@ def create_saddle_part(sw_app, sw_model, vt_dispatch):
 
     # create configuration
     name_active_configuration: str = sw_model.ConfigurationManager.ActiveConfiguration.Name
-    name_configurations: str = sw_model.GetConfigurationNames
-    for i in range(2, 51):
-        name_new_configurations: str = f'{name_active_configuration}({i})'
-        if name_new_configurations not in name_configurations:
-            sw_model.ConfigurationManager.AddConfiguration2(name_new_configurations, '', '', 128,
-                                                            name_active_configuration, '', True)
-            break
-    else:
-        sw_app.SendmsgToUser('Не удалось добавить конфигурацию')
-        print('Не удалось добавить конфигурацию')
-        return
-    sw_model.ShowConfiguration2(name_new_configurations)
+    if not name_active_configuration.endswith(')'):
+        name_configurations: str = sw_model.GetConfigurationNames
+        for i in range(2, 51):
+            name_new_configurations: str = f'{name_active_configuration}({i})'
+            if name_new_configurations not in name_configurations:
+                sw_model.ConfigurationManager.AddConfiguration2(name_new_configurations, '', '', 128,
+                                                                name_active_configuration, '', True)
+                break
+        else:
+            sw_app.SendmsgToUser('Не удалось добавить конфигурацию')
+            print('Не удалось добавить конфигурацию')
+            return
+        sw_model.ShowConfiguration2(name_new_configurations)
 
     # create sketch
-    sw_model.Extension.SelectByID2('Спереди', 'PLANE', 0, 0, 0, False, 0, vt_dispatch, 0)
+    sw_model.Extension.SelectByID2('Справа', 'PLANE', 0, 0, 0, False, 0, vt_dispatch, 0)
     sw_model.SketchManager.InsertSketch(True)
     sw_model.ClearSelection2(True)
 
