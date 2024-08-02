@@ -2,15 +2,22 @@ import win32com.client
 
 
 def add_length_tube(sw_model):
+    """add size in select view"""
     view = sw_model.ActiveDrawingView
+
+    # selection manager
     selection_manager = sw_model.SelectionManager
     selection_data = selection_manager.CreateSelectData
+
+    # select tube
     components = view.GetVisibleDrawingComponents
     name_tube: tuple = ('Труба', 'Ниппель', 'Резьба')
     for component in components:
         name: str = component.Name.split('/')[-1]
         if name.split()[0] in name_tube:
             component.Select(True, selection_data)
+
+    # add size
     sw_model.InsertModelAnnotations3(2, 32776, False, True, False, True)
 
 

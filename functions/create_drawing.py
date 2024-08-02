@@ -3,6 +3,7 @@ import win32com.client
 
 
 def create_drawing(sw_app, sw_model, vt_dispatch):
+    """create 1-5 lists"""
     assembly_path: str = sw_model.GetPathName
     assembly_path_list: list = assembly_path.split('\\')[2:]
     engineer: str = assembly_path_list[2]

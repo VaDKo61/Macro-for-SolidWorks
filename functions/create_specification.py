@@ -6,6 +6,7 @@ from openpyxl.styles import Font, Alignment
 
 
 def create_specification(sw_app, sw_model):
+    """create drawing and save specification in excel"""
     assembly_path: str = sw_model.GetPathName
     assembly_path_list: list = assembly_path.split('\\')[2:]
     assembly_name: str = assembly_path_list[-1].split('.')[0]
