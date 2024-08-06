@@ -12,7 +12,9 @@ def save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2):
 
     # create path frame
     frame_path_list = sw_model.GetPathName.split('\\')
-    frame_path = '\\'.join(frame_path_list[:-1]) + '\\Рама\\' + frame_path_list[-1].split('.')[0]
+    assembly_name = frame_path_list[-1].split('.')[0]
+    frame_path = '\\'.join(frame_path_list[:-1]) + '\\Лазер\\Трубы\\' + ' '.join(assembly_name.split(' ')[0:2]) \
+                 + ' Лазер' + f'\\{" ".join(assembly_name.split(" ")[2:])} IGS'
     create_path_frame(frame_path)
 
     sw_model.Extension.SelectByID2('Твердые тела', 'BDYFOLDER', 0, 0, 0, False, 0, vt_dispatch, 0)
@@ -21,18 +23,21 @@ def save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2):
     bodies.GetSpecificFeature2.SetAutomaticCutList(True)
     bodies.GetSpecificFeature2.SetAutomaticUpdate(True)
     sw_model.ClearSelection2(True)
+    while not bodies.GetNextFeature.Name.startswith('Отрезок'):
+        bodies = bodies.GetNextFeature
     while True:
         bodies = bodies.GetNextFeature
-        if bodies.GetSpecificFeature2 is None:
+        if bodies is None:
             break
-        if not bodies.GetSpecificFeature2.GetBodyCount:
+        bodies_count = bodies.GetSpecificFeature2.GetBodyCount
+        if not bodies_count:
             continue
-        for body in bodies.GetSpecificFeature2.GetBodies:
-            body.Select2(True, selection_data)
-            sw_model.SaveToFile3(f'{frame_path}\\{body.Name}.IGS', 2, 2, False, False,
-                                 arg1, arg2)
-            sw_app.CloseDoc('')
-            sw_model.ClearSelection2(True)
+        body = bodies.GetSpecificFeature2.GetBodies[0]
+        body.Select2(True, selection_data)
+        sw_model.SaveToFile3(f'{frame_path}\\{bodies.Name.replace("<", "(").replace(">", ")")} ({bodies_count} шт).IGS',
+                             2, 2, False, False, arg1, arg2)
+        sw_app.CloseDoc('')
+        sw_model.ClearSelection2(True)
 
 
 def create_path_frame(path: str):

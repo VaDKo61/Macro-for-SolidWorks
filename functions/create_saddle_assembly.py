@@ -2,7 +2,7 @@ import pythoncom
 import win32com.client
 
 
-def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
+def create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane):
     """Create sketch and FeatureCut"""
     selection_manager_assembly = sw_model.SelectionManager
     selection_data_assembly = selection_manager_assembly.CreateSelectData
@@ -33,7 +33,7 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
     # create sketch
     part_name: str = configuration_assembly.Name2
     assembly_name: str = sw_model.GetPathName.split('\\')[-1].split('.')[0]
-    sw_model.Extension.SelectByID2(f'Сверху@{part_name}@{assembly_name}', 'PLANE', 0, 0, 0,
+    sw_model.Extension.SelectByID2(f'{plane}@{part_name}@{assembly_name}', 'PLANE', 0, 0, 0,
                                    False, 0, vt_dispatch, 0)
     sw_model.SketchManager.InsertSketch(True)
     sw_model.ClearSelection2(True)
@@ -88,7 +88,7 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch):
     print('Седло успешно создано')
 
 
-def assembly_saddle():
+def assembly_saddle_front():
     sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
     vt_dispatch = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
     sw_model = sw_app.ActiveDoc
@@ -104,4 +104,23 @@ def assembly_saddle():
         sw_app.SendmsgToUser('Выбрано два объекта')
         print('Выбрано два объекта')
         return
-    create_saddle_assembly(sw_app, sw_model, vt_dispatch)
+    create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane='Спереди')
+
+
+def assembly_saddle_above():
+    sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
+    vt_dispatch = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
+    sw_model = sw_app.ActiveDoc
+    if sw_model.GetType != 2:
+        sw_app.SendmsgToUser('Активна не сборка')
+        print('Активна не сборка')
+        return
+    if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
+        sw_app.SendmsgToUser('Не выбрана кромка под седло')
+        print('Не выбрана кромка под седло')
+        return
+    if sw_model.SelectionManager.GetSelectedObjectCount2(-1) > 1:
+        sw_app.SendmsgToUser('Выбрано два объекта')
+        print('Выбрано два объекта')
+        return
+    create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane='Сверху')

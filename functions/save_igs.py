@@ -10,7 +10,7 @@ def get_path_igs(assembly_path: str) -> tuple:
     assembly_name: str = path_list.pop().split('.')[0]
     path_list.append('Трубы')
     path_list.append(assembly_name)
-    path_list.append('IGS')
+    path_list.append('Трубы IGS')
     path: str = '\\'.join(path_list)
     if os.path.isdir(path):
         for file in os.listdir(path):
