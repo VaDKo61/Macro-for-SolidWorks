@@ -22,15 +22,34 @@ def save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2):
     bodies = selection_manager.GetSelectedObject6(1, -1)
     bodies.GetSpecificFeature2.SetAutomaticCutList(True)
     bodies.GetSpecificFeature2.SetAutomaticUpdate(True)
+    bodies = bodies.GetFirstSubFeature
+    # print(getattr(pythoncom, "VT_BSTR"))
+    # # arg5 = win32com.client.VARIANT(pythoncom.VT_BSTR, "")
+    # # print(bodies.GetFirstSubFeature.CustomPropertyManager.Get6('ДЛИНА', True, arg5, arg5, True, True))
+    # a = ''
+    # arg3 = win32com.client.VARIANT(pythoncom.VT_R8 | pythoncom.VT_BSTR, '')
+    # print(bodies.GetFirstSubFeature.CustomPropertyManager.Get5("Длина", False, arg3, 0, 0))
+    # print(bodies.GetFirstSubFeature.CustomPropertyManager.Get('TOTAL LENGTH'))
+    # print(bodies.GetFirstSubFeature.Parameter('D1'))
+
     sw_model.ClearSelection2(True)
-    while not bodies.GetNextFeature.Name.startswith('Отрезок'):
-        bodies = bodies.GetNextFeature
+    # while not bodies.GetNextFeature.Name.startswith('Отрезок'):
+    #     bodies = bodies.GetNextFeature
     while True:
-        bodies = bodies.GetNextFeature
         if bodies is None:
             break
+
+        # args = [VT_EMPTY, 'VT_NULL', 'VT_I2', 'VT_I4', 'VT_R4', 'VT_R8', 'VT_CY', 'VT_DATE', 'VT_BSTR', 'VT_DISPATCH',
+        #         'VT_ERROR', 'VT_BOOL', 'VT_VARIANT', 'VT_UNKNOWN', 'VT_DECIMAL', 'VT_I1', 'VT_UI1', 'VT_UI2', 'VT_UI4',
+        #         'VT_I8', 'VT_UI8', 'VT_INT', 'VT_UINT', 'VT_VOID', 'VT_HRESULT', 'VT_PTR',
+        #         'VT_SAFEARRAY', 'VT_CARRAY', 'VT_USERDEFINED', 'VT_LPSTR', 'VT_LPWSTR', 'VT_RECORD', 'VT_INT_PTR',
+        #         'VT_UINT_PTR', 'VT_ARRAY']
+        # arg3 = win32com.client.VARIANT(pythoncom.VT_BOOL | pythoncom.VT_BSTR, '')
+        # print(bodies.CustomPropertyManager.Get5("Длина", False, arg3, 0, 0))
+
         bodies_count = bodies.GetSpecificFeature2.GetBodyCount
         if not bodies_count:
+            bodies = bodies.GetNextSubFeature
             continue
         body = bodies.GetSpecificFeature2.GetBodies[0]
         body.Select2(True, selection_data)
@@ -38,6 +57,7 @@ def save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2):
                              2, 2, False, False, arg1, arg2)
         sw_app.CloseDoc('')
         sw_model.ClearSelection2(True)
+        bodies = bodies.GetNextSubFeature
 
 
 def create_path_frame(path: str):
@@ -62,3 +82,4 @@ def elements_frame_igs():
     save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2)
     sw_app.SendmsgToUser('Элементы рамы успешно сохранены')
     print('Элементы рамы успешно сохранены')
+

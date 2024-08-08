@@ -1,12 +1,14 @@
 import win32com.client
 
 
-def create_cut_extrude(sw_app, sw_model, kip):
-    """Create sketch and cut extrude"""
+def create_any_cut_extrude(sw_app, sw_model, count_select, kip):
+    """Create sketch and any cut extrude"""
     selection_manager = sw_model.SelectionManager
     selection_data = selection_manager.CreateSelectData
-    edges = selection_manager.GetSelectedObject6(1, -1)
-    selection_manager.DeSelect2(1, -1)
+    edges: list = []
+    for i in range(1, count_select):
+        edges.append(selection_manager.GetSelectedObject6(1, -1))
+        selection_manager.DeSelect2(1, -1)
     surface = selection_manager.GetSelectedObject6(1, -1)
     try:
         selection_data_sur = selection_manager.CreateSelectData
@@ -40,19 +42,22 @@ def create_cut_extrude(sw_app, sw_model, kip):
         sw_model.EditPart()
 
     # create plane
-    edges.Select4(True, selection_data)
+    edges[0].Select4(True, selection_data)
     plane = sw_model.FeatureManager.InsertRefPlane(4, 0, 0, 0, 0, 0)
 
     # create sketch
     plane.Select4(True, selection_data)
     sw_model.SketchManager.InsertSketch(True)
-    edges.Select4(True, selection_data)
+    for edge in edges:
+        edge.Select4(True, selection_data)
     sw_model.SketchManager.SketchUseEdge3(False, False)
+
     if kip:
-        edges_use = sw_model.GetActiveSketch2.GetSketchSegments[-1]
-        edges_use.ConstructionGeometry = True
-        edges_use.Select4(True, selection_data)
-        sw_model.SketchManager.SketchOffset2(0.001, False, True, 0, 0, True)
+        for i in range(1, count_select):
+            edges_use = sw_model.GetActiveSketch2.GetSketchSegments[-i]
+            edges_use.ConstructionGeometry = True
+            edges_use.Select4(True, selection_data)
+            sw_model.SketchManager.SketchOffset2(0.001, False, True, 0, 0, True)
 
     # create cut extrude
     surface.Select4(True, selection_data)
@@ -70,7 +75,7 @@ def create_cut_extrude(sw_app, sw_model, kip):
     print('Отверстие успешно создано')
 
 
-def cut_extrude():
+def any_cut_extrude():
     sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
@@ -81,27 +86,28 @@ def cut_extrude():
         sw_app.SendmsgToUser('Не выбрана кромка врезаемой трубы')
         print('Не выбрана кромка врезаемой трубы')
         return
-    if sw_model.SelectionManager.GetSelectedObjectType3(2, -1) != 2:
+    count_select = sw_model.SelectionManager.GetSelectedObjectCount2(-1)
+    if sw_model.SelectionManager.GetSelectedObjectType3(count_select, -1) != 2:
         sw_app.SendmsgToUser('Не выбрана поверхность трубы для отверстия')
         print('Не выбрана поверхность трубы для отверстия')
         return
-    create_cut_extrude(sw_app, sw_model, kip=False)
+    create_any_cut_extrude(sw_app, sw_model, count_select, kip=False)
 
 
-def cut_extrude_kip():
+def any_cut_extrude_kip():
     sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
         print('Активна не сборка')
         return
-    print(sw_model.SelectionManager.GetSelectedObjectType3(1, -1))
     if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
         sw_app.SendmsgToUser('Не выбрана кромка врезаемой трубы')
         print('Не выбрана кромка врезаемой трубы')
         return
-    if sw_model.SelectionManager.GetSelectedObjectType3(2, -1) != 2:
+    count_select = sw_model.SelectionManager.GetSelectedObjectCount2(-1)
+    if sw_model.SelectionManager.GetSelectedObjectType3(count_select, -1) != 2:
         sw_app.SendmsgToUser('Не выбрана поверхность трубы для отверстия')
         print('Не выбрана поверхность трубы для отверстия')
         return
-    create_cut_extrude(sw_app, sw_model, kip=True)
+    create_any_cut_extrude(sw_app, sw_model, count_select, kip=True)
