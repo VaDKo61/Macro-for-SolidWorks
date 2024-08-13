@@ -24,7 +24,7 @@ label_3 = Label(text='Лазерный станок:', font=('Times New Roman', 
 label_3.place(x=10, y=150)
 
 btn_drawing = Button(root,
-                     text='Создать чертеж (1-5 лист)',
+                     text='Создать чертеж (2-5 лист)',
                      command=drawing,
                      font=('Times New Roman', 13),
                      activebackground='red',
