@@ -68,4 +68,3 @@ def elements_frame_igs():
     save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2)
     sw_app.SendmsgToUser('Элементы рамы успешно сохранены')
     print('Элементы рамы успешно сохранены')
-

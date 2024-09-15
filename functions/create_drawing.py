@@ -29,6 +29,8 @@ def create_drawing(sw_app, sw_model, vt_dispatch):
         current_view.ScaleDecimal = view_scale
     sw_model.ActivateSheet(sheet_names[-1])
     sw_model.Create1stAngleViews2(assembly_path)
+    sw_app.SendmsgToUser('Листы успешно добавлены')
+    print('Листы успешно добавлены')
 
 
 def drawing():
