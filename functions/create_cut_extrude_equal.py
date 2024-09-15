@@ -1,5 +1,7 @@
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def create_cut_extrude_equal(sw_app, sw_model):
     """Create sketch and cut extrude equal tube"""
@@ -38,6 +40,8 @@ def create_cut_extrude_equal(sw_app, sw_model):
 
     # create sketch
     plane.Select4(True, selection_data)
+    if get_ready():
+        return
     sw_model.SketchManager.InsertSketch(True)
     edges.Select4(True, selection_data)
     sw_model.SketchManager.SketchUseEdge3(False, False)

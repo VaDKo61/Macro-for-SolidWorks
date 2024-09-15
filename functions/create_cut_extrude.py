@@ -1,5 +1,7 @@
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def create_any_cut_extrude(sw_app, sw_model, count_select, kip):
     """Create sketch and any cut extrude"""
@@ -43,6 +45,8 @@ def create_any_cut_extrude(sw_app, sw_model, count_select, kip):
 
     # create plane
     edges[0].Select4(True, selection_data)
+    if get_ready():
+        return
     plane = sw_model.FeatureManager.InsertRefPlane(4, 0, 0, 0, 0, 0)
 
     # create sketch
@@ -53,8 +57,8 @@ def create_any_cut_extrude(sw_app, sw_model, count_select, kip):
     sw_model.SketchManager.SketchUseEdge3(False, False)
 
     if kip:
-        for i in range(1, count_select):
-            edges_use = sw_model.GetActiveSketch2.GetSketchSegments[-i]
+        edges_uses: tuple = sw_model.GetActiveSketch2.GetSketchSegments
+        for edges_use in edges_uses:
             edges_use.ConstructionGeometry = True
             edges_use.Select4(True, selection_data)
             sw_model.SketchManager.SketchOffset2(0.001, False, True, 0, 0, True)

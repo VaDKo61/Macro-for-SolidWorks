@@ -4,6 +4,8 @@ import openpyxl
 import win32com.client
 from openpyxl.styles import Font, Alignment
 
+from functions.create_drill_sheet import get_ready
+
 
 def create_specification(sw_app, sw_model):
     """create drawing and save specification in excel"""
@@ -41,6 +43,8 @@ def create_specification(sw_app, sw_model):
                      'Сварные конструкции.sldwldtbt'
     x_spec: float = -0.2
     y_spec: float = -0.03
+    if get_ready():
+        return
     table_assembly = assembly_view.InsertBomTable4(False, x_spec, y_spec, 1, 1, 'По умолчанию', template_assembly,
                                                    False, 0, False)
     tables_frame: list = []

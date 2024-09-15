@@ -3,6 +3,8 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font, NamedStyle, Side, Border, Alignment
 from openpyxl.worksheet.worksheet import Worksheet
 
+from functions.create_drill_sheet import get_ready
+
 
 def marge_format_excel(names_files: list) -> Workbook:
     """Marge and format excel for Energocomfort"""
@@ -27,6 +29,8 @@ def marge_format_excel(names_files: list) -> Workbook:
     sort_data = sort_by_name(ws)
     sort_data = merge_identical_positions(sort_data)
     title = first_second_row(ws)
+    if get_ready():
+        return
     sort_data = sort_by_fourth(sort_data, title)
     sort_data = number_column(sort_data)
 

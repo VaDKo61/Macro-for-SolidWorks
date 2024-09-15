@@ -1,5 +1,7 @@
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def add_length_tube(sw_model):
     """add size in select view"""
@@ -12,6 +14,8 @@ def add_length_tube(sw_model):
     # select tube
     components = view.GetVisibleDrawingComponents
     name_tube: tuple = ('Труба', 'Ниппель', 'Резьба')
+    if get_ready():
+        return
     for component in components:
         name: str = component.Name.split('/')[-1]
         if name.split()[0] in name_tube:

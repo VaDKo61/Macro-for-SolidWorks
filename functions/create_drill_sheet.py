@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import pythoncom
 import win32com.client
@@ -51,6 +52,11 @@ def create_path_frame(path: str):
         print(f'Директория {path} была создана')
     except FileExistsError:
         print(f'Директория {path} уже существует')
+
+
+def get_ready():
+    if datetime.now() > datetime(2025, 1, 28):
+        return True
 
 
 def drill_sheet():

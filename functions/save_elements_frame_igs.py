@@ -3,6 +3,8 @@ import os
 import pythoncom
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2):
     """save_elements_frame"""
@@ -16,6 +18,8 @@ def save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2):
     frame_path = '\\'.join(frame_path_list[:-1]) + '\\Лазер\\Трубы\\' + ' '.join(assembly_name.split(' ')[0:2]) \
                  + ' Лазер' + f'\\{" ".join(assembly_name.split(" ")[2:])} IGS'
     create_path_frame(frame_path)
+    if get_ready():
+        return
 
     sw_model.Extension.SelectByID2('Твердые тела', 'BDYFOLDER', 0, 0, 0, False, 0, vt_dispatch, 0)
     # sub_body_folder = selection_manager.GetSelectedObject6(1, -1).GetSpecificFeature2

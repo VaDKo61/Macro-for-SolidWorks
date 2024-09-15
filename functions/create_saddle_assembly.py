@@ -1,6 +1,8 @@
 import pythoncom
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane):
     """Create sketch and FeatureCut"""
@@ -29,6 +31,8 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane):
         configuration_assembly.ReferencedConfiguration = name_new_configurations
         configuration_assembly.Select4(True, selection_data_assembly, False)
         sw_model.EditPart()
+        if get_ready():
+            return
 
     # create sketch
     part_name: str = configuration_assembly.Name2

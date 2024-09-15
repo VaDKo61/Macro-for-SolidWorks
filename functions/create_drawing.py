@@ -1,6 +1,8 @@
 import pythoncom
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def create_drawing(sw_app, sw_model, vt_dispatch):
     """create 2-5 lists"""
@@ -12,6 +14,8 @@ def create_drawing(sw_app, sw_model, vt_dispatch):
                                    vt_dispatch, 0)
     sw_model.EditDelete()
     sheet_names: list = ['Изом2', 'Изом3', 'Изом4', 'Габариты']
+    if get_ready():
+        return
     for name in sheet_names:
         current_name = sw_model.GetCurrentSheet.GetName
         sw_model.Extension.SelectByID2(current_name, 'SHEET', 0, 0, 0, False, 0, vt_dispatch, 0)

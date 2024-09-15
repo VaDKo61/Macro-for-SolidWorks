@@ -3,6 +3,8 @@ import os
 import pythoncom
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def get_path_igs(assembly_path: str) -> tuple:
     """Create or clear and get directory"""
@@ -45,6 +47,8 @@ def create_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str,
     """Create IGS, open tube part"""
     sw_app.CloseDoc(assembly_name)
     path_tube_list: list = path.split('\\')
+    if get_ready():
+        return
     path_tube: str = '\\'.join(path_tube_list[:-1])
     path_assembly = '\\'.join(path_tube_list[:-3])
 

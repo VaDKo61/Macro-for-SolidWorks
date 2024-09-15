@@ -3,6 +3,8 @@ import os
 import pythoncom
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def create_path_tube(path: str):
     """Check and crete path"""
@@ -25,9 +27,11 @@ def save_tube():
 
     # save tube in a separate file
     tubes: list = []
+    if get_ready():
+        return
     for component in sw_model.GetComponents(True):
         component_name: str = component.name2.split('-')[0]
-        if component_name.startswith('Труба') or component_name.startswith('Ниппель'):
+        if component_name.startswith(('Труба', 'Ниппель', 'Резьба')):
             if component_name not in tubes:
                 tubes.append(component_name)
                 part = component.GetModelDoc2

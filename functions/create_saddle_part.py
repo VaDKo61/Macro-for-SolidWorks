@@ -1,6 +1,8 @@
 import pythoncom
 import win32com.client
 
+from functions.create_drill_sheet import get_ready
+
 
 def create_saddle_part(sw_app, sw_model, vt_dispatch):
     """Create sketch and FeatureCut"""
@@ -34,6 +36,8 @@ def create_saddle_part(sw_app, sw_model, vt_dispatch):
         sw_model.ShowConfiguration2(name_new_configurations)
 
     # create sketch
+    if get_ready():
+        return
     sw_model.Extension.SelectByID2('Справа', 'PLANE', 0, 0, 0, False, 0, vt_dispatch, 0)
     sw_model.SketchManager.InsertSketch(True)
     sw_model.ClearSelection2(True)
