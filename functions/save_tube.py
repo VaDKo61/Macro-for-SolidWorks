@@ -31,7 +31,7 @@ def save_tube():
         return
     for component in sw_model.GetComponents(True):
         component_name: str = component.name2.split('-')[0]
-        if component_name.startswith(('Труба', 'Ниппель', 'Резьба')):
+        if component_name.startswith('Труба'):
             if component_name not in tubes:
                 tubes.append(component_name)
                 part = component.GetModelDoc2
@@ -44,5 +44,4 @@ def save_tube():
                 part.SaveAs3(f'{path}\\{component_name}.SLDPRT', 0, 8)
     else:
         sw_app.SendmsgToUser('Трубы успешно сохранены')
-        print('Трубы успешно сохранены')
     sw_model.Save3(1, arg1, arg2)

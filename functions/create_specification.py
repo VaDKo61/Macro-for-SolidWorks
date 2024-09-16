@@ -110,8 +110,6 @@ def specification():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
-        print('Активна не сборка')
         return
     create_specification(sw_app, sw_model)
     sw_app.SendmsgToUser('Чертеж создан и сохранены Excel')
-    print('Чертеж создан и сохранены Excel')

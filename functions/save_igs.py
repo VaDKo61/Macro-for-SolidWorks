@@ -21,7 +21,6 @@ def get_path_igs(assembly_path: str) -> tuple:
             print('Директория была очищена от IGS файлов')
     else:
         os.makedirs(path)
-        print(f'Директория {path} была создана')
     return assembly_name, path
 
 
@@ -29,7 +28,7 @@ def get_count_tube(components: list) -> tuple[dict[str, dict[str, int]], dict[st
     tubes: dict[str, dict[str, int]] = {}
     accounting: dict[str, int] = {}
     for component in components:
-        if component.Name2.startswith('Труба') or component.Name2.startswith('Ниппель'):
+        if component.Name2.startswith('Труба'):
             name: str = component.Name2.split('-')[0]
             conf: str = component.ReferencedConfiguration
             if not tubes.get(name):
@@ -57,12 +56,12 @@ def create_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str,
         model = sw_app.OpenDoc6(f'{path_tube}\\{tube}.SLDPRT', 1, 2, '', arg5, arg6)
         for configuration, count in configurations.items():
             model.ShowConfiguration2(configuration)
-            thread_1 = model.FeatureByName('Бобышка-Вытянуть2')
-            if thread_1:
-                thread_1.SetSuppression2(0, 1)
-            thread_1 = model.FeatureByName('Бобышка-Вытянуть3')
-            if thread_1:
-                thread_1.SetSuppression2(0, 1)
+            # thread_1 = model.FeatureByName('Бобышка-Вытянуть2')
+            # if thread_1:
+            #     thread_1.SetSuppression2(0, 1)
+            # thread_1 = model.FeatureByName('Бобышка-Вытянуть3')
+            # if thread_1:
+            #     thread_1.SetSuppression2(0, 1)
             tube_new = tube.replace('(Резьба зеркало)', '(З)').replace('(Плоскости от трубы)', '(Т)')
             model.SaveAs3(f'{path}\\{tube_new} l={configuration} ({count} шт).igs', 0, 2)
         sw_app.CloseDoc(tube)
@@ -126,7 +125,6 @@ def save_igs():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
-        print('Активна не сборка')
         return
     assembly_name, path = get_path_igs(sw_model.GetPathName)
     components = sw_model.GetComponents(True)
@@ -137,5 +135,4 @@ def save_igs():
     create_igs(sw_app, assembly_name, path, tubes, accounting, arg1, arg2)
 
     sw_app.SendmsgToUser('IGS успешно сохранены')
-    print('IGS успешно сохранены')
 

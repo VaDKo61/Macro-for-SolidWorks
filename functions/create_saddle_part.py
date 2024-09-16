@@ -10,11 +10,9 @@ def create_saddle_part(sw_app, sw_model, vt_dispatch):
     selection_manager = sw_model.SelectionManager
     if selection_manager.GetSelectedObjectType3(1, -1) != 1:
         sw_app.SendmsgToUser('Не выбрана кромка под седло')
-        print('Не выбрана кромка под седло')
         return
     if selection_manager.GetSelectedObjectCount2(-1) > 1:
         sw_app.SendmsgToUser('Выбрано два объекта')
-        print('Выбрано два объекта')
         return
     edges = selection_manager.GetSelectedObject6(1, -1)
     sw_model.ClearSelection2(True)
@@ -31,7 +29,6 @@ def create_saddle_part(sw_app, sw_model, vt_dispatch):
                 break
         else:
             sw_app.SendmsgToUser('Не удалось добавить конфигурацию')
-            print('Не удалось добавить конфигурацию')
             return
         sw_model.ShowConfiguration2(name_new_configurations)
 
@@ -76,7 +73,6 @@ def create_saddle_part(sw_app, sw_model, vt_dispatch):
                                         False, False, False, False, True, True, True, True, False, 0, 0, False, False)
     sw_model.ClearSelection2(True)
     sw_app.SendmsgToUser('Седло успешно создано')
-    print('Седло успешно создано')
 
 
 def part_saddle():
@@ -85,6 +81,5 @@ def part_saddle():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 1:
         sw_app.SendmsgToUser('Активна не деталь')
-        print('Активна не деталь')
         return
     create_saddle_part(sw_app, sw_model, vt_dispatch)

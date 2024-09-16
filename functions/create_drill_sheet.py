@@ -64,16 +64,11 @@ def drill_sheet():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 3:
         sw_app.SendmsgToUser('Активен не чертеж')
-        print('Активен не чертеж')
         return
     if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 12:
         sw_app.SendmsgToUser('Не выбран вид чертежа')
-        print('Не выбран вид чертежа')
         return
     vt_dispatch = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
     arg1 = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 2)
     arg2 = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 128)
     create_drill_sheet(sw_app, sw_model, vt_dispatch, arg1, arg2)
-
-
-drill_sheet()

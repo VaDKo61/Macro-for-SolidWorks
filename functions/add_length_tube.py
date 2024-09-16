@@ -30,8 +30,6 @@ def length_tube():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 3:
         sw_app.SendmsgToUser('Активен не чертеж')
-        print('Активен не чертеж')
         return
     add_length_tube(sw_model)
     sw_app.SendmsgToUser('Размеры труб проставлены')
-    print('Размеры труб проставлены')

@@ -67,8 +67,6 @@ def elements_frame_igs():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 1:
         sw_app.SendmsgToUser('Активна не деталь')
-        print('Активна не деталь')
         return
     save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2)
     sw_app.SendmsgToUser('Элементы рамы успешно сохранены')
-    print('Элементы рамы успешно сохранены')

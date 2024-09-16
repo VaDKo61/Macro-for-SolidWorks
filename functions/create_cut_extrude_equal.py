@@ -27,7 +27,6 @@ def create_cut_extrude_equal(sw_app, sw_model):
                 break
         else:
             sw_app.SendmsgToUser('Не удалось добавить конфигурацию')
-            print('Не удалось добавить конфигурацию')
             return
         sw_model.EditAssembly()
         cut_in_pipe.ReferencedConfiguration = name_new_configurations
@@ -59,7 +58,6 @@ def create_cut_extrude_equal(sw_app, sw_model):
     sw_model.EditAssembly()
     a = sw_model.EditRebuild3
     sw_app.SendmsgToUser('Отверстие успешно создано')
-    print('Отверстие успешно создано')
 
 
 def cut_extrude_equal():
@@ -67,14 +65,11 @@ def cut_extrude_equal():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
-        print('Активна не сборка')
         return
     if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
         sw_app.SendmsgToUser('Не выбрана кромка врезаемой трубы')
-        print('Не выбрана кромка врезаемой трубы')
         return
     if sw_model.SelectionManager.GetSelectedObjectType3(2, -1) != 2:
         sw_app.SendmsgToUser('Не выбрана поверхность трубы для отверстия')
-        print('Не выбрана поверхность трубы для отверстия')
         return
     create_cut_extrude_equal(sw_app, sw_model)

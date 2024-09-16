@@ -34,7 +34,6 @@ def create_drawing(sw_app, sw_model, vt_dispatch):
     sw_model.ActivateSheet(sheet_names[-1])
     sw_model.Create1stAngleViews2(assembly_path)
     sw_app.SendmsgToUser('Листы успешно добавлены')
-    print('Листы успешно добавлены')
 
 
 def drawing():
@@ -43,6 +42,5 @@ def drawing():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 3:
         sw_app.SendmsgToUser('Активен не чертеж')
-        print('Активен не чертеж')
         return
     create_drawing(sw_app, sw_model, vt_dispatch)

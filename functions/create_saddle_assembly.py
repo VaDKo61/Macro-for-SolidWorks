@@ -25,7 +25,6 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane):
                 break
         else:
             sw_app.SendmsgToUser('Не удалось добавить конфигурацию')
-            print('Не удалось добавить конфигурацию')
             return
         sw_model.EditAssembly()
         configuration_assembly.ReferencedConfiguration = name_new_configurations
@@ -89,7 +88,6 @@ def create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane):
     sw_model.EditAssembly()
     a = sw_model.EditRebuild3
     sw_app.SendmsgToUser('Седло успешно создано')
-    print('Седло успешно создано')
 
 
 def assembly_saddle_front():
@@ -98,15 +96,12 @@ def assembly_saddle_front():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
-        print('Активна не сборка')
         return
     if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
         sw_app.SendmsgToUser('Не выбрана кромка под седло')
-        print('Не выбрана кромка под седло')
         return
     if sw_model.SelectionManager.GetSelectedObjectCount2(-1) > 1:
         sw_app.SendmsgToUser('Выбрано два объекта')
-        print('Выбрано два объекта')
         return
     create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane='Спереди')
 
@@ -117,14 +112,11 @@ def assembly_saddle_above():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
-        print('Активна не сборка')
         return
     if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
         sw_app.SendmsgToUser('Не выбрана кромка под седло')
-        print('Не выбрана кромка под седло')
         return
     if sw_model.SelectionManager.GetSelectedObjectCount2(-1) > 1:
         sw_app.SendmsgToUser('Выбрано два объекта')
-        print('Выбрано два объекта')
         return
     create_saddle_assembly(sw_app, sw_model, vt_dispatch, plane='Сверху')

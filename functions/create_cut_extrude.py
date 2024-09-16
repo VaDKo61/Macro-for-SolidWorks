@@ -17,7 +17,6 @@ def create_any_cut_extrude(sw_app, sw_model, count_select, kip):
         surface.Select4(True, selection_data_sur)
     except BaseException:
         sw_app.SendmsgToUser('Ошибка, запустите заново')
-        print('Ошибка, запустите заново')
         return
 
     cut_in_pipe = selection_manager.GetSelectedObjectsComponent4(1, -1)
@@ -36,7 +35,6 @@ def create_any_cut_extrude(sw_app, sw_model, count_select, kip):
                 break
         else:
             sw_app.SendmsgToUser('Не удалось добавить конфигурацию')
-            print('Не удалось добавить конфигурацию')
             return
         sw_model.EditAssembly()
         cut_in_pipe.ReferencedConfiguration = name_new_configurations
@@ -76,7 +74,6 @@ def create_any_cut_extrude(sw_app, sw_model, count_select, kip):
     sw_model.EditAssembly()
     a = sw_model.EditRebuild3
     sw_app.SendmsgToUser('Отверстие успешно создано')
-    print('Отверстие успешно создано')
 
 
 def any_cut_extrude():
@@ -84,16 +81,13 @@ def any_cut_extrude():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
-        print('Активна не сборка')
         return
     if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
         sw_app.SendmsgToUser('Не выбрана кромка врезаемой трубы')
-        print('Не выбрана кромка врезаемой трубы')
         return
     count_select = sw_model.SelectionManager.GetSelectedObjectCount2(-1)
     if sw_model.SelectionManager.GetSelectedObjectType3(count_select, -1) != 2:
         sw_app.SendmsgToUser('Не выбрана поверхность трубы для отверстия')
-        print('Не выбрана поверхность трубы для отверстия')
         return
     create_any_cut_extrude(sw_app, sw_model, count_select, kip=False)
 
@@ -103,15 +97,12 @@ def any_cut_extrude_kip():
     sw_model = sw_app.ActiveDoc
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('Активна не сборка')
-        print('Активна не сборка')
         return
     if sw_model.SelectionManager.GetSelectedObjectType3(1, -1) != 1:
         sw_app.SendmsgToUser('Не выбрана кромка врезаемой трубы')
-        print('Не выбрана кромка врезаемой трубы')
         return
     count_select = sw_model.SelectionManager.GetSelectedObjectCount2(-1)
     if sw_model.SelectionManager.GetSelectedObjectType3(count_select, -1) != 2:
         sw_app.SendmsgToUser('Не выбрана поверхность трубы для отверстия')
-        print('Не выбрана поверхность трубы для отверстия')
         return
     create_any_cut_extrude(sw_app, sw_model, count_select, kip=True)
