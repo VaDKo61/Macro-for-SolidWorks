@@ -10,8 +10,8 @@ def create_app_model():
     return sw_app, sw_model
 
 
-def check_part(sw_app, sw_model) -> bool:
-    """check object for detail"""
+def check_assembly(sw_app, sw_model) -> bool:
+    """check object for assembly"""
 
     if sw_model.GetType != 2:
         sw_app.SendmsgToUser('⛔⛔ Активна не сборка ⛔⛔')
@@ -25,7 +25,7 @@ def create_check_path(path: str):
     try:
         os.makedirs(path)
     except FileExistsError:
-        pass
+        return False
 
 def create_com(value, *args):
     """create COM object"""

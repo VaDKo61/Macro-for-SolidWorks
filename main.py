@@ -10,7 +10,7 @@ from functions.create_saddle_assembly import assembly_saddle_front, assembly_sad
 from functions.create_saddle_part import part_saddle
 from functions.create_specification import specification
 from functions.save_elements_frame_igs import elements_frame_igs
-from functions.save_igs import save_igs
+from functions.save_igs import main_save_igs
 from functions.save_pipe import main_save_pipe
 
 root = Tk()
@@ -92,7 +92,7 @@ btn_create_saddle = Button(root,
 btn_create_saddle.place(x=527, y=260)
 btn_save_igs = Button(root,
                       text='Сохранить все активные трубы в IGS',
-                      command=save_igs,
+                      command=main_save_igs,
                       font=('Times New Roman', 13),
                       activebackground='red',
                       cursor="hand2")

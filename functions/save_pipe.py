@@ -1,7 +1,7 @@
 import pythoncom
 
 from functions.create_drill_sheet import get_ready
-from functions.general_functions import check_part, create_check_path, create_app_model, create_com
+from functions.general_functions import check_assembly, create_check_path, create_app_model, create_com
 
 
 def create_path(sw_app, sw_model) -> str:
@@ -44,14 +44,14 @@ def save_pipe(sw_model, path: str):
 
 
 def main_save_pipe():
-    """ initialization SW and main"""
+    """initialization SW and main"""
 
     sw_app, sw_model = create_app_model()
 
     arg1 = create_com(2, pythoncom.VT_BYREF, pythoncom.VT_I4)
     arg2 = create_com(128, pythoncom.VT_BYREF, pythoncom.VT_I4)
 
-    if not check_part(sw_app, sw_model):
+    if not check_assembly(sw_app, sw_model):
         return
 
     path: str = create_path(sw_app, sw_model)

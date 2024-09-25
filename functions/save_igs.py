@@ -1,27 +1,39 @@
 import os
 
 import pythoncom
-import win32com.client
+from future.backports import count
 
 from functions.create_drill_sheet import get_ready
+from functions.general_functions import create_app_model, create_com, check_assembly
 
 
-def get_path_igs(assembly_path: str) -> tuple:
-    """Create or clear and get directory"""
-    path_list: list = assembly_path.split('\\')
-    assembly_name: str = path_list.pop().split('.')[0]
-    path_list.append('Трубы')
-    path_list.append(assembly_name)
-    path_list.append('Трубы IGS')
+def check_path_igs(sw_app, components) -> tuple:
+    """check and get directory"""
+
+    component_path: str = check_path_pipe(sw_app, components)
+    if not component_path:
+        return ()
+
+    path_list: list = component_path.split('\\')
+    assembly_name: str = path_list[-2]
+    path_list[-1] = 'Трубы IGS'
     path: str = '\\'.join(path_list)
-    if os.path.isdir(path):
-        for file in os.listdir(path):
-            os.remove(f'{path}\\{file}')
-        else:
-            print('Директория была очищена от IGS файлов')
-    else:
-        os.makedirs(path)
     return assembly_name, path
+
+
+def check_path_pipe(sw_app, components):
+    """check pipe for standard"""
+
+    count_standard = 0
+    for component in components:
+        if component.Name2.startswith('Труб'):
+            component_path: str = component.GetPathName
+            if 'Библиотека Solid Works НОВАЯ' in component_path:
+                count_standard += 1
+    if count_standard:
+        sw_app.SendmsgToUser(f'⛔⛔ Труба из библиотеки {count_standard} шт. ⛔⛔')
+        return
+    return component_path
 
 
 def get_count_tube(components: list) -> tuple[dict[str, dict[str, int]], dict[str, int]]:
@@ -118,16 +130,22 @@ def create_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str,
     sw_app.OpenDoc6(f'{path_assembly}\\{assembly_name}.SLDASM', 2, 32, '', arg5, arg6)
 
 
-def save_igs():
-    sw_app = win32com.client.dynamic.Dispatch('SldWorks.Application')
-    arg1 = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 2)
-    arg2 = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 128)
-    sw_model = sw_app.ActiveDoc
-    if sw_model.GetType != 2:
-        sw_app.SendmsgToUser('Активна не сборка')
+def main_save_igs():
+    """initialization SW and main"""
+
+    sw_app, sw_model = create_app_model()
+
+    arg1 = create_com(2, pythoncom.VT_BYREF, pythoncom.VT_I4)
+    arg2 = create_com(128, pythoncom.VT_BYREF, pythoncom.VT_I4)
+
+    if not check_assembly(sw_app, sw_model):
         return
-    assembly_name, path = get_path_igs(sw_model.GetPathName)
-    components = sw_model.GetComponents(True)
+
+    components: list = sw_model.GetComponents(True)
+
+    assembly_name, path = check_path_igs(sw_app, components)
+    if not assembly_name:
+        return
 
     tubes: dict[str, dict[str, int]] = get_count_tube(components)[0]
     accounting: dict[str, int] = get_count_tube(components)[1]
@@ -136,3 +154,5 @@ def save_igs():
 
     sw_app.SendmsgToUser('IGS успешно сохранены')
 
+
+main_save_igs()
