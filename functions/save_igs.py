@@ -1,7 +1,4 @@
-import os
-
 import pythoncom
-from future.backports import count
 
 from functions.create_drill_sheet import get_ready
 from functions.general_functions import create_app_model, create_com, check_assembly
@@ -53,19 +50,17 @@ def get_count_tube(components: list) -> tuple[dict[str, dict[str, int]], dict[st
     return tubes, accounting
 
 
-def create_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str, int]], accounting: dict[str, int],
-               arg5, arg6):
-    """Create IGS, open tube part"""
-    sw_app.CloseDoc(assembly_name)
+def create_pipe_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str, int]]):
+    """open and save IGS pipe part"""
+
     path_tube_list: list = path.split('\\')
     if get_ready():
         return
     path_tube: str = '\\'.join(path_tube_list[:-1])
-    path_assembly = '\\'.join(path_tube_list[:-3])
-
-    # save igs tube
+    arg1 = create_com(2, pythoncom.VT_BYREF, pythoncom.VT_I4)
+    arg2 = create_com(128, pythoncom.VT_BYREF, pythoncom.VT_I4)
     for tube, configurations in tubes.items():
-        model = sw_app.OpenDoc6(f'{path_tube}\\{tube}.SLDPRT', 1, 2, '', arg5, arg6)
+        model = sw_app.OpenDoc6(f'{path_tube}\\{tube}.SLDPRT', 1, 2, '', arg1, arg2)
         for configuration, count in configurations.items():
             model.ShowConfiguration2(configuration)
             # thread_1 = model.FeatureByName('Бобышка-Вытянуть2')
@@ -78,65 +73,64 @@ def create_igs(sw_app, assembly_name: str, path: str, tubes: dict[str, dict[str,
             model.SaveAs3(f'{path}\\{tube_new} l={configuration} ({count} шт).igs', 0, 2)
         sw_app.CloseDoc(tube)
 
+    path_assembly = '\\'.join(path_tube_list[:-3])
+
     # save igs accounting
-    tubes_accounting: dict[str: list[list]] = {
-        '25-20 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
-        '25-20 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
-        '32-20 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
-        '32-20 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
-        '40-20 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
-        '40-20 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
-        '40-25 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 25', '65 мм', 2]],
-        '40-25 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 25', '65 мм', 2]],
-        '40-32 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 32', '80 мм', 2]],
-        '40-32 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 32', '80 мм', 2]],
-        '50-20 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
-        '50-20 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
-        '50-25 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 25', '65 мм', 2]],
-        '50-25 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 25', '65 мм', 2]],
-        '50-32 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 32', '80 мм', 2]],
-        '50-32 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 32', '80 мм', 2]],
-        '50-40 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 40', '90 мм', 2]],
-        '50-40 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 40', '90 мм', 2]],
-        '65-32': [['Труба ВГП Dn 32', '80 мм', 2]],
-        '65-40': [['Труба ВГП Dn 40', '90 мм', 2]],
-        '65-50': [['Труба ЭСВ Dn 50', '125 мм', 2]],
-        '65-50 (Расх. фланцевый)': [['Труба ЭСВ Dn 50', '125 мм', 2]],
-        '80-40': [['Труба ВГП Dn 40', '90 мм', 2]],
-        '80-50': [['Труба ЭСВ Dn 50', '125 мм', 2]],
-        '80-50 (Расх. фланцевый)': [['Труба ЭСВ Dn 50', '125 мм', 2]],
-        '80-65': [['Труба ЭСВ Dn 65', '155 мм', 2]],
-        '100-50': [['Труба ЭСВ Dn 50', '125 мм', 2]],
-        '100-50 (Расх. фланцевый)': [['Труба ЭСВ Dn 50', '125 мм', 2]],
-        '100-65': [['Труба ЭСВ Dn 65', '155 мм', 2]],
-        '100-80': [['Труба ЭСВ Dn 80', '185 мм', 2]],
-        '125-65': [['Труба ЭСВ Dn 65', '155 мм', 2]],
-        '125-80': [['Труба ЭСВ Dn 80', '185 мм', 2]],
-        '150-80': [['Труба ЭСВ Dn 80', '185 мм', 2]],
-        '150-100': [['Труба ЭСВ Dn 100', '230 мм', 2]],
-    }
-    for name, count in accounting.items():
-        for tube in tubes_accounting.get(name):
-            if tube[0].endswith('(УУТЭ П)') or tube[0].endswith('(УУТЭ О)'):
-                path_model = f'\\\\192.168.1.14\\SolidWorks\\Библиотека Solid Works НОВАЯ\\УУТЭ\\Детали вторичные' \
-                             f'\\{tube[0]}.SLDPRT'
-            else:
-                path_model = f'\\\\192.168.1.14\\SolidWorks\\Библиотека Solid Works НОВАЯ\\Металл\\Трубы' \
-                             f'\\{tube[0]}.SLDPRT'
-            model = sw_app.OpenDoc6(path_model, 1, 2, '', arg5, arg6)
-            model.ShowConfiguration2(tube[1])
-            model.SaveAs3(f'{path}\\{tube[0]} l={tube[1]} ({count * tube[2]} шт).igs', 0, 2)
-            sw_app.CloseDoc(tube[0])
-    sw_app.OpenDoc6(f'{path_assembly}\\{assembly_name}.SLDASM', 2, 32, '', arg5, arg6)
+    # tubes_accounting: dict[str: list[list]] = {
+    #     '25-20 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
+    #     '25-20 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
+    #     '32-20 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
+    #     '32-20 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
+    #     '40-20 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
+    #     '40-20 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
+    #     '40-25 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 25', '65 мм', 2]],
+    #     '40-25 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 25', '65 мм', 2]],
+    #     '40-32 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 32', '80 мм', 2]],
+    #     '40-32 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 32', '80 мм', 2]],
+    #     '50-20 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
+    #     '50-20 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 20', '60 мм', 2]],
+    #     '50-25 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 25', '65 мм', 2]],
+    #     '50-25 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 25', '65 мм', 2]],
+    #     '50-32 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 32', '80 мм', 2]],
+    #     '50-32 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 32', '80 мм', 2]],
+    #     '50-40 Подающий': [['Труба ЭСВ Dn 65 (УУТЭ П)', '140 мм', 1], ['Труба ВГП Dn 40', '90 мм', 2]],
+    #     '50-40 Обратный': [['Труба ЭСВ Dn 65 (УУТЭ О)', '140 мм', 1], ['Труба ВГП Dn 40', '90 мм', 2]],
+    #     '65-32': [['Труба ВГП Dn 32', '80 мм', 2]],
+    #     '65-40': [['Труба ВГП Dn 40', '90 мм', 2]],
+    #     '65-50': [['Труба ЭСВ Dn 50', '125 мм', 2]],
+    #     '65-50 (Расх. фланцевый)': [['Труба ЭСВ Dn 50', '125 мм', 2]],
+    #     '80-40': [['Труба ВГП Dn 40', '90 мм', 2]],
+    #     '80-50': [['Труба ЭСВ Dn 50', '125 мм', 2]],
+    #     '80-50 (Расх. фланцевый)': [['Труба ЭСВ Dn 50', '125 мм', 2]],
+    #     '80-65': [['Труба ЭСВ Dn 65', '155 мм', 2]],
+    #     '100-50': [['Труба ЭСВ Dn 50', '125 мм', 2]],
+    #     '100-50 (Расх. фланцевый)': [['Труба ЭСВ Dn 50', '125 мм', 2]],
+    #     '100-65': [['Труба ЭСВ Dn 65', '155 мм', 2]],
+    #     '100-80': [['Труба ЭСВ Dn 80', '185 мм', 2]],
+    #     '125-65': [['Труба ЭСВ Dn 65', '155 мм', 2]],
+    #     '125-80': [['Труба ЭСВ Dn 80', '185 мм', 2]],
+    #     '150-80': [['Труба ЭСВ Dn 80', '185 мм', 2]],
+    #     '150-100': [['Труба ЭСВ Dn 100', '230 мм', 2]],
+    # }
+    # for name, count in accounting.items():
+    #     for tube in tubes_accounting.get(name):
+    #         if tube[0].endswith('(УУТЭ П)') or tube[0].endswith('(УУТЭ О)'):
+    #             path_model = f'\\\\192.168.1.14\\SolidWorks\\Библиотека Solid Works НОВАЯ\\УУТЭ\\Детали вторичные' \
+    #                          f'\\{tube[0]}.SLDPRT'
+    #         else:
+    #             path_model = f'\\\\192.168.1.14\\SolidWorks\\Библиотека Solid Works НОВАЯ\\Металл\\Трубы' \
+    #                          f'\\{tube[0]}.SLDPRT'
+    #         model = sw_app.OpenDoc6(path_model, 1, 2, '', arg5, arg6)
+    #         model.ShowConfiguration2(tube[1])
+    #         model.SaveAs3(f'{path}\\{tube[0]} l={tube[1]} ({count * tube[2]} шт).igs', 0, 2)
+    #         sw_app.CloseDoc(tube[0])
+    # sw_app.OpenDoc6(f'{path_assembly}\\{assembly_name}.SLDASM', 2, 32, '', arg5, arg6)
 
 
 def main_save_igs():
     """initialization SW and main"""
 
     sw_app, sw_model = create_app_model()
-
-    arg1 = create_com(2, pythoncom.VT_BYREF, pythoncom.VT_I4)
-    arg2 = create_com(128, pythoncom.VT_BYREF, pythoncom.VT_I4)
 
     if not check_assembly(sw_app, sw_model):
         return
@@ -147,10 +141,12 @@ def main_save_igs():
     if not assembly_name:
         return
 
-    tubes: dict[str, dict[str, int]] = get_count_tube(components)[0]
-    accounting: dict[str, int] = get_count_tube(components)[1]
+    tubes: dict[str, dict[str, int]] = {}
+    accounting: dict[str, int] = {}
+    tubes, accounting = get_count_tube(components)
 
-    create_igs(sw_app, assembly_name, path, tubes, accounting, arg1, arg2)
+    sw_app.CloseDoc(assembly_name)
+    create_pipe_igs(sw_app, assembly_name, path, tubes)
 
     sw_app.SendmsgToUser('IGS успешно сохранены')
 
