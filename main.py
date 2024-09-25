@@ -11,7 +11,7 @@ from functions.create_saddle_part import part_saddle
 from functions.create_specification import specification
 from functions.save_elements_frame_igs import elements_frame_igs
 from functions.save_igs import save_igs
-from functions.save_tube import save_tube
+from functions.save_pipe import main_save_pipe
 
 root = Tk()
 root.title('Помощник инженера')
@@ -56,7 +56,7 @@ btn_conversion_excel = Button(root,
 btn_conversion_excel.place(x=261, y=110)
 btn_save_tube = Button(root,
                        text='Сохранить все трубы в папку проекта',
-                       command=save_tube,
+                       command=main_save_pipe,
                        font=('Times New Roman', 13),
                        activebackground='red',
                        cursor="hand2")
