@@ -27,7 +27,14 @@ def create_check_path(path: str):
     except FileExistsError:
         return False
 
+
 def create_com(value, *args):
     """create COM object"""
     if len(args) == 2:
         return win32com.client.VARIANT(args[0] | args[1], value)
+
+
+def clear_path(path: str):
+    if os.path.isdir(path):
+        for file in os.listdir(path):
+            os.remove(f'{path}\\{file}')
