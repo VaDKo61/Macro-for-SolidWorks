@@ -33,13 +33,6 @@ btn_drawing = Button(root,
                      activebackground='red',
                      cursor="hand2")
 btn_drawing.place(x=10, y=40)
-btn_length_tube = Button(root,
-                         text='Добавить размеры труб на вид',
-                         command=length_tube,
-                         font=('Times New Roman', 13),
-                         activebackground='red',
-                         cursor="hand2")
-btn_length_tube.place(x=215, y=40)
 btn_specification = Button(root,
                            text='Создать спецификацию (Чертеж)',
                            command=specification,
@@ -61,35 +54,27 @@ btn_save_tube = Button(root,
                        activebackground='red',
                        cursor="hand2")
 btn_save_tube.place(x=10, y=180)
-btn_create_conf_tube = Button(root,
-                              text='Создать конфинурации труб',
-                              command=initialization_conf_tube,
-                              font=('Times New Roman', 13),
-                              activebackground='red',
-                              cursor="hand2")
-btn_create_conf_tube.place(x=10, y=220)
-
-btn_create_saddle_front = Button(root,
-                                 text='Создать седло в сборке (Спереди)',
-                                 command=assembly_saddle_front,
+btn_any_cut_extrude = Button(root,
+                             text='Создать отверстия от труб',
+                             command=any_cut_extrude,
+                             font=('Times New Roman', 13),
+                             activebackground='red',
+                             cursor="hand2")
+btn_any_cut_extrude.place(x=10, y=220)
+btn_any_cut_extrude_kip = Button(root,
+                                 text='Создать отверстия от врезок (КИП)',
+                                 command=any_cut_extrude_kip,
                                  font=('Times New Roman', 13),
                                  activebackground='red',
                                  cursor="hand2")
-btn_create_saddle_front.place(x=10, y=260)
-btn_create_saddle_above = Button(root,
-                                 text='Создать седло в сборке (Сверху)',
-                                 command=assembly_saddle_above,
-                                 font=('Times New Roman', 13),
-                                 activebackground='red',
-                                 cursor="hand2")
-btn_create_saddle_above.place(x=273, y=260)
-btn_create_saddle = Button(root,
-                           text='Создать седло в детали',
-                           command=part_saddle,
-                           font=('Times New Roman', 13),
-                           activebackground='red',
-                           cursor="hand2")
-btn_create_saddle.place(x=527, y=260)
+btn_any_cut_extrude_kip.place(x=216, y=220)
+btn_cut_extrude_equal = Button(root,
+                               text='Создать отверстие от равнопроходной трубы',
+                               command=cut_extrude_equal,
+                               font=('Times New Roman', 13),
+                               activebackground='red',
+                               cursor="hand2")
+btn_cut_extrude_equal.place(x=10, y=260)
 btn_save_igs = Button(root,
                       text='Сохранить все активные трубы в IGS',
                       command=main_save_igs,
@@ -104,26 +89,40 @@ btn_save_elements_frame_igs = Button(root,
                                      activebackground='red',
                                      cursor="hand2")
 btn_save_elements_frame_igs.place(x=10, y=340)
-btn_any_cut_extrude = Button(root,
-                             text='Создать отверстия от труб',
-                             command=any_cut_extrude,
-                             font=('Times New Roman', 13),
-                             activebackground='red',
-                             cursor="hand2")
-btn_any_cut_extrude.place(x=10, y=410)
-btn_any_cut_extrude_kip = Button(root,
-                                 text='Создать отверстия от врезок (КИП)',
-                                 command=any_cut_extrude_kip,
+btn_create_conf_tube = Button(root,
+                              text='Создать конфинурации труб',
+                              command=initialization_conf_tube,
+                              font=('Times New Roman', 13),
+                              activebackground='red',
+                              cursor="hand2")
+btn_create_conf_tube.place(x=10, y=410)
+btn_length_tube = Button(root,
+                         text='Добавить размеры труб на вид',
+                         command=length_tube,
+                         font=('Times New Roman', 13),
+                         activebackground='red',
+                         cursor="hand2")
+btn_length_tube.place(x=225, y=410)
+btn_create_saddle_front = Button(root,
+                                 text='Создать седло в сборке (Спереди)',
+                                 command=assembly_saddle_front,
                                  font=('Times New Roman', 13),
                                  activebackground='red',
                                  cursor="hand2")
-btn_any_cut_extrude_kip.place(x=216, y=410)
-btn_cut_extrude_equal = Button(root,
-                               text='Создать отверстие от равнопроходной трубы',
-                               command=cut_extrude_equal,
-                               font=('Times New Roman', 13),
-                               activebackground='red',
-                               cursor="hand2")
-btn_cut_extrude_equal.place(x=10, y=450)
+btn_create_saddle_front.place(x=10, y=450)
+btn_create_saddle_above = Button(root,
+                                 text='Создать седло в сборке (Сверху)',
+                                 command=assembly_saddle_above,
+                                 font=('Times New Roman', 13),
+                                 activebackground='red',
+                                 cursor="hand2")
+btn_create_saddle_above.place(x=273, y=450)
+btn_create_saddle = Button(root,
+                           text='Создать седло в детали',
+                           command=part_saddle,
+                           font=('Times New Roman', 13),
+                           activebackground='red',
+                           cursor="hand2")
+btn_create_saddle.place(x=527, y=450)
 
 root.mainloop()

@@ -188,6 +188,3 @@ def main_save_igs():
     sw_app.OpenDoc6(path_assembly, 2, 32, '', arg1, arg2)
 
     sw_app.SendmsgToUser('IGS успешно сохранены')
-
-
-main_save_igs()
