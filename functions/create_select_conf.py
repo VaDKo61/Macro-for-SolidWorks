@@ -1,3 +1,4 @@
+from functions.create_drill_sheet import get_ready
 from functions.general_functions import create_app_model, check_assembly, check_unselect_element, create_select_man_data
 
 
@@ -30,13 +31,14 @@ def create_pipe_conf(sw_model, pipes):
             sw_model.EditAssembly()
             pipe.ReferencedConfiguration = name_new_conf
             sw_model.ClearSelection2(True)
-            break
     return
 
 
 def add_unique_conf(sw_model_pipe, name_conf, all_name_conf) -> str:
     """add in pipe unique configurations"""
 
+    if get_ready():
+        return ''
     for i in range(2, 51):
         name_new_conf: str = f'{name_conf}({i})'
         if name_new_conf not in all_name_conf:
@@ -62,5 +64,3 @@ def main_create_select_conf():
     if not create_pipe_conf(sw_model, pipes):
         sw_app.SendmsgToUser('Конфигурации успешно добавлены')
 
-
-main_create_select_conf()
