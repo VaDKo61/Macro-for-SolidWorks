@@ -23,7 +23,7 @@ def check_path_pipe(sw_app, components):
 
     count_standard = 0
     for component in components:
-        if component.Name2.startswith('Труб'):
+        if component.Name2.startswith('Труба'):
             component_path: str = component.GetPathName
             if 'Библиотека Solid Works НОВАЯ' in component_path:
                 count_standard += 1

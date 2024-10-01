@@ -12,7 +12,7 @@ def create_path(sw_app, sw_model) -> str:
         sw_app.SendmsgToUser('⛔⛔ Название содержит точки ⛔⛔')
         return ''
     assembly_name: str = path_list.pop().split('.')[0]
-    if assembly_name.count(' ') > 2:
+    if assembly_name.count(' ') > 1:
         sw_app.SendmsgToUser('⛔⛔ Название не по шаблону ⛔⛔')
         return ''
     elif not assembly_name.endswith('Лазер'):
