@@ -3,7 +3,7 @@ import os
 import pythoncom
 import win32com.client
 
-from functions.create_drill_sheet import get_ready
+from functions.archive.create_drill_sheet import get_ready
 
 
 def save_elements_frame_igs(sw_app, sw_model, vt_dispatch, arg1, arg2):

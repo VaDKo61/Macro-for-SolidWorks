@@ -1,6 +1,6 @@
 import pythoncom
 
-from functions.create_drill_sheet import get_ready
+from functions.archive.create_drill_sheet import get_ready
 from functions.general_functions import check_assembly, create_check_path, create_app_model, create_com
 
 

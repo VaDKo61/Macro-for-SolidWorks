@@ -1,5 +1,6 @@
-from functions.create_drill_sheet import get_ready
-from functions.general_functions import create_app_model, check_assembly, check_unselect_element, create_select_man_data
+from functions.archive.create_drill_sheet import get_ready
+from functions.general_functions import create_app_model, check_assembly, check_unselect_element, \
+    create_select_man_data, add_unique_conf
 
 
 def filter_only_pipe(sw_model) -> list:
@@ -18,6 +19,8 @@ def create_pipe_conf(sw_model, pipes):
 
     sel_manager, sel_data = create_select_man_data(sw_model)
 
+    if get_ready():
+        return ''
     for pipe in pipes:
         name_conf: str = pipe.ReferencedConfiguration
         if not name_conf.endswith(')'):
@@ -33,18 +36,6 @@ def create_pipe_conf(sw_model, pipes):
             sw_model.ClearSelection2(True)
     return
 
-
-def add_unique_conf(sw_model_pipe, name_conf, all_name_conf) -> str:
-    """add in pipe unique configurations"""
-
-    if get_ready():
-        return ''
-    for i in range(2, 51):
-        name_new_conf: str = f'{name_conf}({i})'
-        if name_new_conf not in all_name_conf:
-            sw_model_pipe.ConfigurationManager.AddConfiguration2(name_new_conf, '', '', 128,
-                                                                 name_conf, '', True)
-            return name_new_conf
 
 def main_create_select_conf():
     """initialization SW and main"""

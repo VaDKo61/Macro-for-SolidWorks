@@ -1,6 +1,6 @@
 import win32com.client
 
-from functions.create_drill_sheet import get_ready
+from functions.archive.create_drill_sheet import get_ready
 
 
 def create_cut_extrude_equal(sw_app, sw_model):

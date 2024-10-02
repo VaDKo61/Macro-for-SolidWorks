@@ -4,7 +4,7 @@ import openpyxl
 import win32com.client
 from openpyxl.styles import Font, Alignment
 
-from functions.create_drill_sheet import get_ready
+from functions.archive.create_drill_sheet import get_ready
 
 
 def create_specification(sw_app, sw_model):

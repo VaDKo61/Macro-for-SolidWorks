@@ -28,6 +28,24 @@ def check_unselect_element(sw_app, sw_model) -> bool:
     return True
 
 
+def check_edge(sw_app, sel_manager, index) -> bool:
+    """check object for edge"""
+
+    if sel_manager.GetSelectedObjectType3(index, -1) != 1:
+        sw_app.SendmsgToUser('⛔⛔ Не выбрана кромка врезаемой трубы ⛔⛔')
+        return False
+    return True
+
+
+def check_surface(sw_app, sel_manager, index) -> bool:
+    """check object for surface"""
+
+    if sel_manager.GetSelectedObjectType3(index, -1) != 2:
+        sw_app.SendmsgToUser('⛔⛔ Не выбрана поверхность трубы ⛔⛔')
+        return False
+    return True
+
+
 def create_check_path(path: str):
     """check and create path"""
 
@@ -56,3 +74,14 @@ def create_select_man_data(sw_model):
     sel_manager = sw_model.SelectionManager
     sel_data = sel_manager.CreateSelectData
     return sel_manager, sel_data
+
+
+def add_unique_conf(sw_model_pipe, name_conf, all_name_conf) -> str:
+    """add in pipe unique configurations"""
+
+    for i in range(2, 51):
+        name_new_conf: str = f'{name_conf}({i})'
+        if name_new_conf not in all_name_conf:
+            sw_model_pipe.ConfigurationManager.AddConfiguration2(name_new_conf, '', '', 128,
+                                                                 name_conf, '', True)
+            return name_new_conf
