@@ -1,17 +1,17 @@
 from tkinter import Tk, Button, Label
 
-from functions.conversion_excel import conversion_excel
+from functions.save_conversion_excel import conversion_excel
 from functions.create_cut import main_any_cut
-from functions.create_drawing import drawing
+from functions.create_drawing import main_create_drawing
 from functions.create_select_conf import main_create_select_conf
 from functions.create_specification import specification
-from functions.save_elements_frame_igs import elements_frame_igs
+from functions.save_elements_frame_igs import main_save_frame_igs
 from functions.save_igs import main_save_igs
 from functions.save_pipe import main_save_pipe
 
 root = Tk()
 root.title('Помощник инженера')
-root.geometry('750x600')
+root.geometry('500x400')
 
 label_1 = Label(text='Чертежи:', font=('Times New Roman', 15))
 label_1.place(x=10, y=10)
@@ -22,7 +22,7 @@ label_3.place(x=10, y=150)
 
 btn_drawing = Button(root,
                      text='Создать чертеж (2-5 лист)',
-                     command=drawing,
+                     command=main_create_drawing,
                      font=('Times New Roman', 13),
                      activebackground='red',
                      cursor="hand2")
@@ -71,7 +71,7 @@ btn_save_igs = Button(root,
 btn_save_igs.place(x=10, y=300)
 btn_save_elements_frame_igs = Button(root,
                                      text='Сохранить элементы рамы в IGS',
-                                     command=elements_frame_igs,
+                                     command=main_save_frame_igs,
                                      font=('Times New Roman', 13),
                                      activebackground='red',
                                      cursor="hand2")

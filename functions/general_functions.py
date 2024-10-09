@@ -19,6 +19,24 @@ def check_assembly(sw_app, sw_model) -> bool:
     return True
 
 
+def check_part(sw_app, sw_model) -> bool:
+    """check object for part"""
+
+    if sw_model.GetType != 1:
+        sw_app.SendmsgToUser('⛔⛔ Активна не деталь ⛔⛔')
+        return False
+    return True
+
+
+def check_drawing(sw_app, sw_model) -> bool:
+    """check object for drawing"""
+
+    if sw_model.GetType != 3:
+        sw_app.SendmsgToUser('⛔⛔ Активен не чертеж ⛔⛔')
+        return False
+    return True
+
+
 def check_unselect_element(sw_app, sw_model) -> bool:
     """check selected elements or not"""
 
@@ -60,6 +78,8 @@ def create_com(value, *args):
 
     if len(args) == 2:
         return win32com.client.VARIANT(args[0] | args[1], value)
+    else:
+        return win32com.client.VARIANT(args[0], value)
 
 
 def clear_path(path: str):

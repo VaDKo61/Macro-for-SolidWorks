@@ -1,6 +1,6 @@
 from functions.archive.create_drill_sheet import get_ready
 from functions.general_functions import create_app_model, check_edge, check_surface, create_select_man_data, \
-    add_unique_conf
+    add_unique_conf, check_assembly
 
 
 def save_edges_surface(sel_manager, count_select):
@@ -65,7 +65,7 @@ def edit_radius_edges(sw_model, sel_data):
     """edit radius edges for template"""
 
     kip: tuple = (0.0213, 0.0269, 0.0269, 0.0268, 0.0337, 0.335, 0.027, 0.03, 0.04, 0.048, 0.056, 0.0654, 0.0268,
-                  0.0335, 0.0423, 0.048, 0.057, 0.015)
+                  0.0335, 0.048, 0.057, 0.015)
     black_steel: tuple = (0.0359, 0.041, 0.05, 0.053, 0.069, 0.081, 0.1, 0.125, 0.151, 0.209, 0.261, 0.313, 0.363)
     stainless_steel: tuple = (0.0384, 0.0443, 0.0563, 0.0721, 0.0849, 0.104, 0.1337, 0.153, 0.2131, 0.0364, 0.0423)
 
@@ -119,6 +119,9 @@ def main_any_cut():
     sel_manager, sel_data = create_select_man_data(sw_model)
 
     count_select = sel_manager.GetSelectedObjectCount2(-1)
+
+    if not check_assembly(sw_app, sw_model):
+        return
 
     for i in range(1, count_select):
         if not check_edge(sw_app, sel_manager, i):
