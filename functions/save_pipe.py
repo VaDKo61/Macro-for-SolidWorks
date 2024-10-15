@@ -1,7 +1,7 @@
 import pythoncom
 
 from functions.archive.create_drill_sheet import get_ready
-from functions.general_functions import check_assembly, create_check_path, create_app_model, create_com
+from functions.general_functions import check_assembly, create_check_path, create_app_model, create_com, save_assembly
 
 
 def create_path(sw_app, sw_model) -> str:
@@ -12,7 +12,7 @@ def create_path(sw_app, sw_model) -> str:
         sw_app.SendmsgToUser('⛔⛔ Название содержит точки ⛔⛔')
         return ''
     assembly_name: str = path_list.pop().split('.')[0]
-    if assembly_name.count(' ') > 1:
+    if assembly_name.count(' ') != 1:
         sw_app.SendmsgToUser('⛔⛔ Название не по шаблону ⛔⛔')
         return ''
     elif not assembly_name.endswith('Лазер'):
@@ -60,5 +60,8 @@ def main_save_pipe():
 
     save_pipe(sw_model, path)
 
-    sw_model.Save3(1, arg1, arg2)
+    if not save_assembly(sw_model, arg1, arg2):
+        sw_app.SendmsgToUser('⛔⛔ Сборка не сохранилась ⛔⛔')
+        return
+
     sw_app.SendmsgToUser('Трубы успешно сохранены')

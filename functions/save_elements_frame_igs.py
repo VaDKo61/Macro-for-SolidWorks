@@ -14,7 +14,7 @@ def create_path_frame(sw_app, sw_model) -> str:
     if part_name.count('.') > 0:
         sw_app.SendmsgToUser('⛔⛔ Название содержит точки ⛔⛔')
         return ''
-    if part_name.count(' ') > 2:
+    if part_name.count(' ') != 2:
         sw_app.SendmsgToUser('⛔⛔ Название не по шаблону ⛔⛔')
         return ''
     if '№' not in part_name:

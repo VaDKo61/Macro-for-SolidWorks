@@ -105,3 +105,9 @@ def add_unique_conf(sw_model_pipe, name_conf, all_name_conf) -> str:
             sw_model_pipe.ConfigurationManager.AddConfiguration2(name_new_conf, '', '', 128,
                                                                  name_conf, '', True)
             return name_new_conf
+
+
+def save_assembly(sw_model, arg1, arg2):
+    """save current assembly silent"""
+
+    return sw_model.Save3(1, arg1, arg2)

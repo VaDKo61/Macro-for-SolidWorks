@@ -1,7 +1,7 @@
 import pythoncom
 
 from functions.archive.create_drill_sheet import get_ready
-from functions.general_functions import create_app_model, create_com, check_assembly, clear_path
+from functions.general_functions import create_app_model, create_com, check_assembly, clear_path, save_assembly
 
 
 def check_path_igs(sw_app, components) -> tuple:
@@ -168,14 +168,20 @@ def main_save_igs():
     if not assembly_name:
         return
 
+
+
+    arg1 = create_com(2, pythoncom.VT_BYREF, pythoncom.VT_I4)
+    arg2 = create_com(128, pythoncom.VT_BYREF, pythoncom.VT_I4)
+    if not save_assembly(sw_model, arg1, arg2):
+        sw_app.SendmsgToUser('⛔⛔ Сборка не сохранилась ⛔⛔')
+        return
+
     tubes, accounting = get_count_tube(components)
 
     path_assembly: str = sw_model.GetPathName
     sw_app.CloseDoc(assembly_name)
 
     clear_path(path)
-    arg1 = create_com(2, pythoncom.VT_BYREF, pythoncom.VT_I4)
-    arg2 = create_com(128, pythoncom.VT_BYREF, pythoncom.VT_I4)
 
     if not create_pipe_igs(sw_app, path, tubes, arg1, arg2):
         sw_app.SendmsgToUser('⛔⛔ Ошибка в конфигурациях, будут расхождения длин ⛔⛔')
