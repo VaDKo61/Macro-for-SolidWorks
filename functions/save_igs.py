@@ -64,7 +64,8 @@ def create_pipe_igs(sw_app, path: str, pipes: dict[str, dict[str, int]], arg1, a
                     model.ConfigurationManager.ActiveConfiguration.Name != configuration):
                 return False
             pipe_new = pipe.replace('(Резьба зеркало)', '(З)').replace('(Плоскости от трубы)', '(Т)')
-            model.SaveAs3(f'{path}\\{pipe_new} l={configuration} ({count} шт).igs', 0, 2)
+            if not model.SaveAs3(f'{path}\\{pipe_new} l={configuration} ({count} шт).igs', 0, 2):
+                return False
         sw_app.CloseDoc(pipe)
     return True
 
@@ -149,7 +150,8 @@ def create_accounting_igs(sw_app, path: str, accounting: dict[str, int], arg1, a
                     model.ConfigurationManager.ActiveConfiguration.Name != configuration):
                 return False
             pipe_new = pipe.replace('(Резьба зеркало)', '(З)').replace('(Плоскости от трубы)', '(Т)')
-            model.SaveAs3(f'{path}\\{pipe_new}  l={configuration} ({count} шт).igs', 0, 2)
+            if not model.SaveAs3(f'{path}\\{pipe_new}  l={configuration} ({count} шт).igs', 0, 2):
+                return False
         sw_app.CloseDoc(pipe)
     return True
 
@@ -184,10 +186,12 @@ def main_save_igs():
     clear_path(path)
 
     if not create_pipe_igs(sw_app, path, tubes, arg1, arg2):
+        clear_path(path)
         sw_app.SendmsgToUser('⛔⛔ Ошибка в конфигурациях, будут расхождения длин ⛔⛔')
         return
 
     if not create_accounting_igs(sw_app, path, accounting, arg1, arg2):
+        clear_path(path)
         sw_app.SendmsgToUser('⛔⛔ Ошибка в конфигурациях, будут расхождения длин ⛔⛔')
         return
 

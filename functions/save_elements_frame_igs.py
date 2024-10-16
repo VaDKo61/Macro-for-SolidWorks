@@ -59,7 +59,8 @@ def save_elements_igs(sw_app, sw_model, path) -> bool:
         body.Select2(False, sel_data)
         name_element: str = bodies.Name.replace("<", "(").replace(">", ")")
         path_element: str = '{}\\{} l={} мм ({} шт.).IGS'.format(path, name_element, arg5.value, bodies_count)
-        sw_model.SaveToFile3(path_element, 2, 2, False, False, arg2, arg3)
+        if not sw_model.SaveToFile3(path_element, 2, 2, False, False, arg2, arg3):
+            return False
         sw_app.CloseDoc('')
         sw_model.ClearSelection2(True)
         bodies = bodies.GetNextSubFeature
@@ -79,6 +80,7 @@ def main_save_frame_igs():
         return
 
     if not save_elements_igs(sw_app, sw_model, path):
+        clear_path(path)
         sw_app.SendmsgToUser('⛔⛔ Не удалось сохранить файлы ⛔⛔')
         return
 
