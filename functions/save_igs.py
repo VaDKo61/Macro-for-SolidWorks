@@ -50,7 +50,7 @@ def get_count_tube(components: list) -> tuple[dict[str, dict[str, int]], dict[st
     return tubes, accounting
 
 
-def create_pipe_igs(sw_app, path: str, pipes: dict[str, dict[str, int]], arg1, arg2):
+def create_pipe_igs(sw_app, path: str, pipes: dict[str, dict[str, int]], arg1, arg2, arg3, arg4):
     """open and save IGS pipe part"""
 
     path_pipe_list: list = path.split('\\')
@@ -64,13 +64,14 @@ def create_pipe_igs(sw_app, path: str, pipes: dict[str, dict[str, int]], arg1, a
                     model.ConfigurationManager.ActiveConfiguration.Name != configuration):
                 return False
             pipe_new = pipe.replace('(Резьба зеркало)', '(З)').replace('(Плоскости от трубы)', '(Т)')
-            if not model.SaveAs3(f'{path}\\{pipe_new} l={configuration} ({count} шт).igs', 0, 2):
+            if not model.Extension.SaveAs3(f'{path}\\{pipe_new} l={configuration} ({count} шт).igs', 0, 1, arg3, arg4,
+                                           arg1, arg2):
                 return False
         sw_app.CloseDoc(pipe)
     return True
 
 
-def create_accounting_igs(sw_app, path: str, accounting: dict[str, int], arg1, arg2):
+def create_accounting_igs(sw_app, path: str, accounting: dict[str, int], arg1, arg2, arg3, arg4):
     """open and save IGS accounting part"""
 
     pipes_accounting: dict[str: list[list]] = {
@@ -150,7 +151,8 @@ def create_accounting_igs(sw_app, path: str, accounting: dict[str, int], arg1, a
                     model.ConfigurationManager.ActiveConfiguration.Name != configuration):
                 return False
             pipe_new = pipe.replace('(Резьба зеркало)', '(З)').replace('(Плоскости от трубы)', '(Т)')
-            if not model.SaveAs3(f'{path}\\{pipe_new}  l={configuration} ({count} шт).igs', 0, 2):
+            if not model.Extension.SaveAs3(f'{path}\\{pipe_new}  l={configuration} ({count} шт).igs', 0, 1, arg3, arg4,
+                                           arg1, arg2):
                 return False
         sw_app.CloseDoc(pipe)
     return True
@@ -170,8 +172,6 @@ def main_save_igs():
     if not assembly_name:
         return
 
-
-
     arg1 = create_com(2, pythoncom.VT_BYREF, pythoncom.VT_I4)
     arg2 = create_com(128, pythoncom.VT_BYREF, pythoncom.VT_I4)
     if not save_assembly(sw_model, arg1, arg2):
@@ -185,12 +185,14 @@ def main_save_igs():
 
     clear_path(path)
 
-    if not create_pipe_igs(sw_app, path, tubes, arg1, arg2):
+    arg3 = arg4 = create_com(None, pythoncom.VT_DISPATCH)
+
+    if not create_pipe_igs(sw_app, path, tubes, arg1, arg2, arg3, arg4):
         clear_path(path)
         sw_app.SendmsgToUser('⛔⛔ Ошибка в конфигурациях, будут расхождения длин ⛔⛔')
         return
 
-    if not create_accounting_igs(sw_app, path, accounting, arg1, arg2):
+    if not create_accounting_igs(sw_app, path, accounting, arg1, arg2, arg3, arg4):
         clear_path(path)
         sw_app.SendmsgToUser('⛔⛔ Ошибка в конфигурациях, будут расхождения длин ⛔⛔')
         return

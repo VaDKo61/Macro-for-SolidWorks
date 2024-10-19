@@ -27,12 +27,13 @@ def create_path(sw_app, sw_model) -> str:
     return path
 
 
-def save_pipe(sw_model, path: str):
+def save_pipe(sw_model, path: str, arg1, arg2) -> bool:
     """save pipe in directory assembly"""
 
+    arg3 = arg4 = create_com(None, pythoncom.VT_DISPATCH)
     pipes: list = []
     if get_ready():
-        return
+        return False
     for component in sw_model.GetComponents(True):
         component_name: str = component.name2
         if component_name.startswith('Труба'):
@@ -40,7 +41,9 @@ def save_pipe(sw_model, path: str):
             if component_name not in pipes:
                 pipes.append(component_name)
                 pipe = component.GetModelDoc2
-                pipe.SaveAs3(f'{path}\\{component_name}.SLDPRT', 0, 8)
+                if not pipe.Extension.SaveAs3(f'{path}\\{component_name}.SLDPRT', 0, 1, arg3, arg4, arg1, arg2):
+                    return False
+    return True
 
 
 def main_save_pipe():
@@ -58,7 +61,9 @@ def main_save_pipe():
     if not path:
         return
 
-    save_pipe(sw_model, path)
+    if not save_pipe(sw_model, path, arg1, arg2):
+        sw_app.SendmsgToUser('⛔⛔ Не удалось сохранить трубы ⛔⛔')
+        return
 
     if not save_assembly(sw_model, arg1, arg2):
         sw_app.SendmsgToUser('⛔⛔ Сборка не сохранилась ⛔⛔')
