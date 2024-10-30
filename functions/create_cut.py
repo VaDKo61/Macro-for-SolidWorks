@@ -9,9 +9,8 @@ def save_edges_surface(sel_manager, count_select):
     edges: list = []
     for i in range(1, count_select):
         edges.append(sel_manager.GetSelectedObject6(i, -1))
-    surface_pipe = sel_manager.GetSelectedObject6(count_select, -1)
     pipe = sel_manager.GetSelectedObjectsComponent4(count_select, -1)
-    return edges, surface_pipe, pipe
+    return edges, pipe
 
 
 def create_conf(sw_model, pipe, sel_data):
@@ -61,24 +60,67 @@ def create_sketch(sw_model, plane_edge, edges, sel_data) -> bool:
     return False
 
 
-def edit_radius_edges(sw_model, sel_data):
+def edit_radius_edges(sw_model, sel_data, pipe):
     """edit radius edges for template"""
 
-    kip: tuple = (0.0213, 0.0269, 0.0269, 0.0268, 0.0337, 0.335, 0.027, 0.03, 0.04, 0.048, 0.056, 0.0654, 0.0268,
-                  0.0335, 0.048, 0.057, 0.015)
-    black_steel: tuple = (0.0359, 0.041, 0.05, 0.053, 0.069, 0.081, 0.1, 0.125, 0.151, 0.209, 0.261, 0.313, 0.363)
-    stainless_steel: tuple = (0.0384, 0.0443, 0.0563, 0.0721, 0.0849, 0.104, 0.1337, 0.153, 0.2131, 0.0364, 0.0423)
+    pipe_name: str = pipe.Name2
+    pipe_material: str = 'stainless' if 'н_ж' in pipe_name else 'black'
+
+    without_saddle_black: dict = {'Dn 125': ((0.0423,), (0.041, 0.05, 0.069)),
+                                  'Dn 150': ((0.0423, 0.048), (0.05, 0.069)),
+                                  'Dn 200': ((0.0423, 0.048, 0.057), (0.069,)),
+                                  'Dn 250': ((0.0423, 0.048, 0.057), (0.069,)),
+                                  'Dn 300': ((0.0423, 0.048, 0.057, 0.076), ())}
+    without_saddle_stainless: dict = {'Dn 125 н_ж': ((0.0424,), (0.0443, 0.0423)),
+                                      'Dn 150 н_ж': ((0.0424, 0.0483), ())}
+
+    if pipe_material == 'black':
+        black = True
+        saddle: tuple = (0.081, 0.1, 0.125, 0.151, 0.209, 0.261, 0.313)
+        without_saddle: tuple = (0.0213, 0.0268, 0.0335, 0.015, 0.03, 0.0268, 0.0335, 0.04231, 0.048, 0.057)
+        maybe_saddle: tuple = (0.0359, 0.041, 0.05, 0.069)
+        for key, value in without_saddle_black.items():
+            if key in pipe_name:
+                total_saddle = saddle + value[1]
+                total_without_saddle = without_saddle + value[0]
+                break
+        else:
+            total_saddle = saddle + maybe_saddle
+            total_without_saddle = without_saddle
+
+    elif pipe_material == 'stainless':
+        black = False
+        saddle: tuple = (0.0563, 0.0543, 0.0721, 0.0849, 0.104, 0.1337, 0.153, 0.2131)
+        without_saddle: tuple = (0.0213, 0.0269, 0.0337, 0.015, 0.027, 0.03, 0.04, 0.048, 0.056, 0.0654)
+        maybe_saddle: tuple = (0.0384, 0.0443, 0.0364, 0.0423)
+        for key, value in without_saddle_stainless.items():
+            if key in pipe_name:
+                total_saddle = saddle + value[1]
+                total_without_saddle = without_saddle + value[0]
+                break
+        else:
+            total_saddle = saddle + maybe_saddle
+            total_without_saddle = without_saddle
+
+    else:
+        return False
+
+    # kip: tuple = (0.0213, 0.0269, 0.0268, 0.0337, 0.335, 0.027, 0.03, 0.04, 0.048, 0.056, 0.0654, 0.0268,
+    #               0.0335, 0.048, 0.057, 0.015)
+    # black_steel: tuple = (0.0359, 0.041, 0.05, 0.053, 0.069, 0.081, 0.1, 0.125, 0.151, 0.209, 0.261, 0.313, 0.363)
+    # stainless_steel: tuple = (0.0384, 0.0443, 0.0563, 0.0721, 0.0849, 0.104, 0.1337, 0.153, 0.2131, 0.0364, 0.0423)
 
     for edge in sw_model.GetActiveSketch2.GetSketchSegments:
-        edge_radius = round(edge.GetRadius * 2, 4)
-        if edge_radius in kip:
+        edge_diameter = round(edge.GetRadius * 2, 4)
+        if edge_diameter in total_without_saddle:
             if not sketch_off_set(sw_model, edge, sel_data, 0.001):
                 return False
-        elif edge_radius in black_steel:
-            continue
-        elif edge_radius in stainless_steel:
-            if not sketch_off_set(sw_model, edge, sel_data, -0.001):
-                return False
+        elif edge_diameter in total_saddle:
+            if black:
+                continue
+            else:
+                if not sketch_off_set(sw_model, edge, sel_data, -0.001):
+                    return False
         else:
             return False
     return True
@@ -130,7 +172,7 @@ def main_any_cut():
     if not check_surface(sw_app, sel_manager, count_select):
         return
 
-    edges, surface_pipe, pipe = save_edges_surface(sel_manager, count_select)
+    edges, pipe = save_edges_surface(sel_manager, count_select)
     sw_model.ClearSelection2(True)
 
     create_conf(sw_model, pipe, sel_data)
@@ -144,7 +186,7 @@ def main_any_cut():
         sw_app.SendmsgToUser('⛔⛔ Эскиз не создался ⛔⛔')
         return
 
-    if not edit_radius_edges(sw_model, sel_data):
+    if not edit_radius_edges(sw_model, sel_data, pipe):
         sw_app.SendmsgToUser('⛔⛔ Неверная кромка ⛔⛔')
         return
 
