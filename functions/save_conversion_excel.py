@@ -53,6 +53,11 @@ def marge_format_excel(names_files: list) -> Workbook:
             column[0].value = title_sheet[f'sheet{count}']
             count += 1
 
+    # Summ mass
+    for column in ws.iter_rows(min_col=9, max_col=10, max_row=1):
+        column[0].value = 'Общий вес:'
+        column[1].value = summ_mass(sort_data)
+
     # Set width column
     name_size_column = {
         'A': 5,
@@ -214,6 +219,17 @@ def edit_add_frame(names: list, sort_data: list, title: list) -> list:
     sort_data.append(title[1])
     sort_data += sort_data_frame
     return sort_data
+
+
+def summ_mass(sort_data):
+    result = []
+    for i in sort_data:
+        if isinstance(i[9], float) or isinstance(i[9], int):
+            result.append(i[4] * i[9])
+        elif isinstance(i[9], str):
+            if i[9].replace('.', '').replace(',', '').isdigit():
+                result.append(i[4] * float(i[9].replace(',', '.')))
+    return str(round(sum(result) * 1.15, 1))
 
 
 def conversion_excel():

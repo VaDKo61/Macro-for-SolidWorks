@@ -66,19 +66,19 @@ def edit_radius_edges(sw_model, sel_data, pipe):
     pipe_name: str = pipe.Name2
     pipe_material: str = 'stainless' if 'н_ж' in pipe_name else 'black'
 
-    without_saddle_black: dict = {'Dn 125': ((0.0423,), (0.041, 0.05, 0.069)),
-                                  'Dn 150': ((0.0423, 0.048), (0.05, 0.069)),
-                                  'Dn 200': ((0.0423, 0.048, 0.057), (0.069,)),
-                                  'Dn 250': ((0.0423, 0.048, 0.057), (0.069,)),
-                                  'Dn 300': ((0.0423, 0.048, 0.057, 0.076), ())}
+    without_saddle_black: dict = {'Dn 125': ((0.0423,), (0.041, 0.05, 0.053, 0.069)),
+                                  'Dn 150': ((0.0423, 0.048), (0.05, 0.053, 0.069)),
+                                  'Dn 200': ((0.0423, 0.048, 0.057, 0.06), (0.069,)),
+                                  'Dn 250': ((0.0423, 0.048, 0.057, 0.06), (0.069,)),
+                                  'Dn 300': ((0.0423, 0.048, 0.057, 0.06, 0.076), ())}
     without_saddle_stainless: dict = {'Dn 125 н_ж': ((0.0424,), (0.0443, 0.0423)),
                                       'Dn 150 н_ж': ((0.0424, 0.0483), ())}
 
     if pipe_material == 'black':
         black = True
         saddle: tuple = (0.081, 0.1, 0.125, 0.151, 0.209, 0.261, 0.313)
-        without_saddle: tuple = (0.0213, 0.0268, 0.0335, 0.015, 0.03, 0.0268, 0.0335, 0.04231, 0.048, 0.057)
-        maybe_saddle: tuple = (0.0359, 0.041, 0.05, 0.069)
+        without_saddle: tuple = (0.0213, 0.0268, 0.0335, 0.015, 0.03, 0.0268, 0.0335, 0.04231, 0.048, 0.057, 0.06)
+        maybe_saddle: tuple = (0.0359, 0.041, 0.05, 0.053, 0.069)
         for key, value in without_saddle_black.items():
             if key in pipe_name:
                 total_saddle = saddle + value[1]
