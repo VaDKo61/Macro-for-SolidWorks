@@ -12,7 +12,7 @@ def create_specification(sw_app, sw_model):
     assembly_path: str = sw_model.GetPathName
     assembly_path_list: list = assembly_path.split('\\')[2:]
     assembly_name: str = assembly_path_list[-1].split('.')[0]
-    engineer: str = assembly_path_list[2]
+    engineer: str = assembly_path_list[3]
 
     # select frame part
     frames: list = []
@@ -23,8 +23,8 @@ def create_specification(sw_app, sw_model):
             frame_names.append('-'.join(component.Name2.split('-')[0:-1]))
 
     # create draw
-    template_path = f'\\\\{assembly_path_list[0]}\\{assembly_path_list[1]}\\{engineer}\\Шаблоны\\' \
-                    f'Чертеж спецификации.DRWDOT'
+    template_path = f'\\\\{assembly_path_list[0]}\\{assembly_path_list[1]}\\{assembly_path_list[2]}\\{engineer}\\' \
+                    f'Шаблоны\\Чертеж спецификации.DRWDOT'
     sw_draw = sw_app.NewDocument(template_path, 12, 0.42, 0.297)
 
     # add draw view

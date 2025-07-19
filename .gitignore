@@ -2,3 +2,4 @@
 /venv
 /output
 /test.py
+/functions/create_specification.py

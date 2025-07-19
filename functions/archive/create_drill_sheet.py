@@ -55,7 +55,7 @@ def create_path_frame(path: str):
 
 
 def get_ready():
-    if datetime.now() > datetime(2025, 1, 28):
+    if datetime.now() > datetime(2025, 7, 28):
         return True
 
 
