@@ -66,21 +66,14 @@ def edit_radius_edges(sw_model, sel_data, pipe):
     pipe_name: str = pipe.Name2
     pipe_material: str = 'stainless' if 'н_ж' in pipe_name else 'black'
 
-    without_saddle_black: dict = {'Dn 100': ((0.0335,), (0.0359, 0.041, 0.05, 0.053, 0.069)),
-                                  'Dn 125': ((0.0335, 0.0423), (0.041, 0.05, 0.053, 0.069)),
-                                  'Dn 150': ((0.0335, 0.0423, 0.048), (0.05, 0.053, 0.069)),
-                                  'Dn 200': ((0.0335, 0.0423, 0.048, 0.057, 0.06), (0.069,)),
-                                  'Dn 250': ((0.0335, 0.0423, 0.048, 0.057, 0.06), (0.069,)),
-                                  'Dn 300': ((0.0335, 0.0423, 0.048, 0.057, 0.06, 0.076), ())}
-    without_saddle_stainless: dict = {'Dn 100 н_ж': ((0.0337,), (0.0384, 0.0364, 0.0443, 0.0423)),
-                                      'Dn 125 н_ж': ((0.0337, 0.0424), (0.0443, 0.0423)),
-                                      'Dn 150 н_ж': ((0.0337, 0.0424, 0.0483), ())}
+    without_saddle_black: dict = {}
+    without_saddle_stainless: dict = {}
 
     if pipe_material == 'black':
         black = True
-        saddle: tuple = (0.081, 0.1, 0.125, 0.151, 0.209, 0.261, 0.313)
-        without_saddle: tuple = (0.0213, 0.0268, 0.015, 0.03, 0.0268)
-        maybe_saddle: tuple = (0.0271, 0.0359, 0.041, 0.05, 0.053, 0.069)
+        saddle: tuple = ()
+        without_saddle: tuple = ()
+        maybe_saddle: tuple = ()
         for key, value in without_saddle_black.items():
             if key in pipe_name:
                 total_saddle = saddle + value[1]
@@ -92,9 +85,9 @@ def edit_radius_edges(sw_model, sel_data, pipe):
 
     elif pipe_material == 'stainless':
         black = False
-        saddle: tuple = (0.0563, 0.0543, 0.0721, 0.0849, 0.104, 0.1337, 0.153, 0.2131)
-        without_saddle: tuple = (0.0213, 0.0269, 0.015, 0.027, 0.03, 0.04, 0.048, 0.056, 0.0654)
-        maybe_saddle: tuple = (0.0297, 0.0384, 0.0443, 0.0277, 0.0364, 0.0423)
+        saddle: tuple = ()
+        without_saddle: tuple = ()
+        maybe_saddle: tuple = ()
         for key, value in without_saddle_stainless.items():
             if key in pipe_name:
                 total_saddle = saddle + value[1]

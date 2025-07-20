@@ -46,11 +46,6 @@ def add_view(sw_model, sheet_names: list, assembly_path: str, scale: float):
     """add view in sheets"""
 
     view_names: list = ['*Изометрия', 'Изом 2', 'Изом 3', 'Изом 4']
-    for i in zip(sheet_names[:4], view_names[:4]):
-        sw_model.ActivateSheet(i[0])
-        current_view = sw_model.CreateDrawViewFromModelView3(assembly_path, i[1], 0.21, 0.1485, 0)
-        current_view.SetDisplayMode4(False, 3, False, True, False)
-        current_view.ScaleDecimal = scale
     sw_model.ActivateSheet(sheet_names[-1])
     sw_model.Create1stAngleViews2(assembly_path)
     return

@@ -140,21 +140,6 @@ def create_accounting_igs(sw_app, path: str, accounting: dict[str, int], arg1, a
                 pipes_accounting_current[pipe[0]][pipe[1]] = pipes_accounting_current[pipe[0]].setdefault(pipe[1], 0) + \
                                                              pipe[2] * count
 
-    for pipe, configurations in pipes_accounting_current.items():
-        if pipe.endswith(('(УУТЭ П)', '(УУТЭ О)')):
-            path_model = f'{path_accounting_part}\\{pipe}.SLDPRT'
-        else:
-            path_model = f'{path_accounting_pipe}\\{pipe}.SLDPRT'
-        model = sw_app.OpenDoc6(path_model, 1, 2, '', arg1, arg2)
-        for configuration, count in configurations.items():
-            if (model.ShowConfiguration2(configuration) == False and
-                    model.ConfigurationManager.ActiveConfiguration.Name != configuration):
-                return False
-            pipe_new = pipe.replace('(Резьба зеркало)', '(З)').replace('(Плоскости от трубы)', '(Т)')
-            if not model.Extension.SaveAs3(f'{path}\\{pipe_new}  l={configuration} ({count} шт).igs', 0, 1, arg3, arg4,
-                                           arg1, arg2):
-                return False
-        sw_app.CloseDoc(pipe)
     return True
 
 

@@ -41,31 +41,7 @@ def save_elements_igs(sw_app, sw_model, path) -> bool:
     if get_ready():
         return True
     bodies = bodies.GetFirstSubFeature
-    arg2 = create_com(2, pythoncom.VT_BYREF, pythoncom.VT_I4)
-    arg3 = create_com(128, pythoncom.VT_BYREF, pythoncom.VT_I4)
-    arg4 = create_com(None, pythoncom.VT_BYREF, pythoncom.VT_BSTR)
-    arg5 = create_com(None, pythoncom.VT_BYREF, pythoncom.VT_BSTR)
-    arg6 = create_com(True, pythoncom.VT_BYREF, pythoncom.VT_BOOL)
-    arg7 = create_com(True, pythoncom.VT_BYREF, pythoncom.VT_BOOL)
-    while True:
-        if bodies is None:
-            return True
-        bodies_count = bodies.GetSpecificFeature2.GetBodyCount
-        if not bodies_count:
-            bodies = bodies.GetNextSubFeature
-            continue
-        body = bodies.GetSpecificFeature2.GetBodies[0]
-        bodies.CustomPropertyManager.Get6('Длина', False, arg4, arg5, arg6, arg7)
-        body.Select2(False, sel_data)
-        name_element: str = bodies.Name.replace("<", "(").replace(">", ")")
-        path_element: str = '{}\\{} l={} мм ({} шт.).IGS'.format(path, name_element, arg5.value, bodies_count)
-        path_element = path_element.replace('профильной', 'проф.').replace(',00', '')
-        if not sw_model.SaveToFile3(path_element, 2, 2, False, False, arg2, arg3):
-            sw_app.CloseDoc('')
-            return False
-        sw_app.CloseDoc('')
-        sw_model.ClearSelection2(True)
-        bodies = bodies.GetNextSubFeature
+
 
 
 def main_save_frame_igs():

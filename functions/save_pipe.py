@@ -34,15 +34,6 @@ def save_pipe(sw_model, path: str, arg1, arg2) -> bool:
     pipes: list = []
     if get_ready():
         return False
-    for component in sw_model.GetComponents(True):
-        component_name: str = component.name2
-        if component_name.startswith('Труба'):
-            component_name = component_name.split('-')[0]
-            if component_name not in pipes:
-                pipes.append(component_name)
-                pipe = component.GetModelDoc2
-                if not pipe.Extension.SaveAs3(f'{path}\\{component_name}.SLDPRT', 0, 1, arg3, arg4, arg1, arg2):
-                    return False
     return True
 
 
